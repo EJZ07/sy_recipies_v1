@@ -4,4 +4,5 @@ const getKilobyteSize = ({str}) => {
   return `${kilobytes}KB`;
 };
 
-export { getKilobyteSize }
+
+export { getKilobyteSize}

@@ -1,16 +1,17 @@
 import React, { useEffect, useContext } from 'react'
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View } from 'react-native';
 import { UserDataContext } from '../../context/UserDataContext';
 import { ColorSchemeContext } from '../../context/ColorSchemeContext'
 import ScreenTemplate from '../../components/ScreenTemplate';
 import { firestore } from '../../firebase/config';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, collection } from 'firebase/firestore';
 import { decode, encode } from 'base-64'
 import { colors, fontSize } from '../../theme';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../firebase/config';
 import { useAtom } from 'jotai'
 import { checkedAtom, loggedInAtom } from '../../utils/atom';
+import styles from './styles';
 if (!global.btoa) { global.btoa = encode }
 if (!global.atob) { global.atob = decode }
 
@@ -51,15 +52,3 @@ export default function Initial() {
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: fontSize.xxxLarge,
-    marginBottom: 20,
-    textAlign: 'center'
-  },
-})

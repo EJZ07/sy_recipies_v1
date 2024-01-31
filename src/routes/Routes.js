@@ -1,6 +1,6 @@
 import React from 'react'
 import Main from './navigation'
-import Initial from '../scenes/initial/Initial'
+import Initial from '../scenes/Initial/index.tsx'
 import { useAtom } from 'jotai'
 import { checkedAtom, loggedInAtom } from '../utils/atom'
 

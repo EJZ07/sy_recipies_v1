@@ -14,6 +14,7 @@ import { ColorSchemeContext } from '../../context/ColorSchemeContext'
 import { defaultAvatar, eulaLink } from '../../config'
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase/config'
+import styles from './styles';
 
 export default function Registration() {
   const [fullName, setFullName] = useState('')
@@ -112,30 +113,3 @@ export default function Registration() {
   )
 }
 
-const styles = StyleSheet.create({
-  main: {
-    flex: 1,
-    width: '100%',
-  },
-  footerView: {
-    flex: 1,
-    alignItems: "center",
-    marginBottom: 20,
-    marginTop: 20
-  },
-  footerText: {
-    fontSize: fontSize.large,
-  },
-  footerLink: {
-    color: colors.blueLight,
-    fontWeight: "bold",
-    fontSize: fontSize.large
-  },
-  link: {
-    textAlign: 'center'
-  },
-  eulaLink: {
-    color: colors.blueLight,
-    fontSize: fontSize.middle
-  }
-})

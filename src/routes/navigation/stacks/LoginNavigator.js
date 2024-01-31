@@ -5,7 +5,7 @@ import { lightProps, darkProps } from './navigationProps/navigationProps'
 import HeaderStyle from './headerComponents/HeaderStyle'
 
 import Login from '../../../scenes/login'
-import Registration from '../../../scenes/registration'
+import Registration from '../../../scenes/Registration/styles'
 
 const Stack = createStackNavigator()
 
