@@ -44,12 +44,15 @@ export default function Login() {
       const response = await signInWithEmailAndPassword(auth, email, password)
       const uid = response.user.uid
       const usersRef = doc(firestore, 'users', uid)
+      console.log("User ID: ", uid)
       const firestoreDocument = await getDoc(usersRef)
+      console.log("Doc Ref retrieved")
       if (!firestoreDocument.exists) {
         setSpinner(false)
         alert("User does not exist anymore.")
         return;
       }
+      // navigation.navigate('HomeRoot')
     } catch(error) {
       setSpinner(false)
       alert(error)

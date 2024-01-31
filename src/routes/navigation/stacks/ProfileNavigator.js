@@ -5,7 +5,7 @@ import { lightProps, darkProps } from './navigationProps/navigationProps'
 import HeaderStyle from './headerComponents/HeaderStyle'
 
 import Profile from '../../../scenes/profile'
-import Edit from '../../../scenes/edit'
+import Edit from '../../../scenes/Edit'
 
 const Stack = createStackNavigator()
 const RootStack = createStackNavigator()

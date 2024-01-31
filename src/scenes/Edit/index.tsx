@@ -18,6 +18,7 @@ import { updatePassword, EmailAuthProvider, reauthenticateWithCredential } from 
 import { auth } from '../../firebase/config'
 import { showToast } from '../../utils/ShowToast'
 import Spinner from 'react-native-loading-spinner-overlay'
+import styles from "./styles"
 
 export default function Edit() {
   const { userData } = useContext(UserDataContext)
@@ -205,32 +206,3 @@ export default function Edit() {
   )
 }
 
-const styles = StyleSheet.create({
-  progress: {
-    alignSelf: 'center',
-  },
-  darkprogress: {
-    alignSelf: 'center',
-    color: colors.white,
-  },
-  main: {
-    flex: 1,
-    width: '100%',
-  },
-  title: {
-    fontSize: fontSize.xxxLarge,
-    marginBottom: 20,
-    textAlign: 'center'
-  },
-  field: {
-    fontSize: fontSize.middle,
-    textAlign: 'center',
-  },
-  avatar: {
-    margin: 30,
-    alignSelf: "center",
-  },
-  changePasswordContainer: {
-    paddingVertical: 30
-  }
-})

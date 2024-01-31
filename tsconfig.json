@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+  },
+  "resolveJsonModule": true,
+  "typeRoots": [
+    "./types"
+  ],
+  "extends": "expo/tsconfig.base"
+}
