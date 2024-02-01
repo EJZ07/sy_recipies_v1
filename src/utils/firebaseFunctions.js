@@ -35,8 +35,11 @@ const unfollow = async ({ userData, data }) => {
 }
 
 const addPost = async ({userData, data}) => {
-    const followRef = await doc(collection(firestore, 'posts', ))
-    await setDoc(followRef, data)
+    const postRef = await doc(collection(firestore, 'posts' ))
+    await setDoc(postRef, data)
+
+    const uPostRef = await doc(collection(firestore, 'users', userData.id, 'posts' ))
+    await setDoc(uPostRef, data)
 }   
 
 const getUser = async ({data}) => {

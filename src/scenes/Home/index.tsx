@@ -5,7 +5,7 @@ import IconButton from '../../components/IconButton'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import Button from '../../components/Button'
 import { firestore } from '../../firebase/config'
-import { doc, onSnapshot, setDoc, query, collection, getDocs, where, getDoc } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc, query, collection, getDocs, where, getDoc, orderBy } from 'firebase/firestore';
 import Post from '../../components/Post'
 import { colors, fontSize } from '../../theme'
 import { UserDataContext } from '../../context/UserDataContext'
@@ -96,7 +96,7 @@ export default function Home() {
 
     const getPosts = async () => {
         const usersRef = await collection(firestore, 'posts')
-        const q = query(usersRef);
+        const q = query(usersRef, orderBy("createdAt", "desc"));
         let temp = []
         const querySnapshot = await getDocs(q);
 
@@ -142,6 +142,7 @@ export default function Home() {
             <FlatList
                 style={[{ marginBottom: 30 }, styles.main]}
                 data={postList}
+                keyExtractor={(item) => item?.id + (Math.random() * 9999)}
                 renderItem={({ index, item }) => <Post key={index} data={item} />}
                 showsVerticalScrollIndicator={false}
                 refreshControl={

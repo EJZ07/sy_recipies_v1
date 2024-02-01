@@ -63,8 +63,10 @@ export default function Create() {
   const handlePost = () => {
     const data = {
       id: userData.id,
+      name: userData.fullName,
       avatar: userData.avatar,
-      text: text
+      text: text,
+      createdAt: new Date()
     }
     addPost({ userData, data })
     setRerender(!rerender)

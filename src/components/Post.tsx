@@ -1,4 +1,4 @@
-import React, { useRef, useContext, useEffect, useState} from 'react'
+import React, { useRef, useContext, useEffect, useState } from 'react'
 import { Text, View, ScrollView, StyleSheet, Dimensions, Image } from 'react-native'
 import { ColorSchemeContext } from '../context/ColorSchemeContext'
 import { getUser } from '../utils/firebaseFunctions';
@@ -6,10 +6,10 @@ import { colors, fontSize } from '../theme'
 import { firestore, } from "../firebase/config";
 import { doc, onSnapshot, collection, query, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
 
-export default function Post (props) {
-    
+export default function Post(props) {
+
     const { scheme } = useContext(ColorSchemeContext)
-    const {data} = props
+    const { data } = props
     const isDark = scheme === 'dark'
     const [user, setUser] = useState({})
     const colorScheme = {
@@ -24,8 +24,8 @@ export default function Post (props) {
         if (docSnap.exists()) {
             console.log("Document Data: ", docSnap.data())
             setUser(docSnap.data())
-          
-        }else{
+
+        } else {
             return "No such document"
         }
     }
@@ -37,17 +37,20 @@ export default function Post (props) {
 
     return (
         <View style={[colorScheme.content, styles.plate]}>
-            <View style={{ flexDirection: "row", padding: 12 }}>
-                <Image source={{ uri: user?.avatar }} style={{
-                    width: 50,
-                    height: 50,
-                    borderRadius: 50,
-                    marginRight: 10
-                }} />
-                <View style={{ flexDirection: "column", alignItems: "flex-start" }}>
-                    <Text style={[styles.title, { color: colorScheme.text }]}>{user?.fullName}</Text>
-                    <Text style={[styles.contents, { color: colorScheme.text }]}>{data?.text}</Text>
+            <View style={{padding: 12 }}>
+                <View style={{ flexDirection: "row", }}>
+                    <Image source={{ uri: user?.avatar }} style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 50,
+                        marginRight: 10
+                    }} />
+                    <View style={{ flexDirection: "column", alignItems: "flex-start" }}>
+                        <Text style={[styles.title, { color: colorScheme.text }]}>{user?.fullName}</Text>
+                        <Text style={[styles.contents, { color: colorScheme.text }]}>{data?.text}</Text>
+                    </View>
                 </View>
+                <Text style={{color: colors.lightPurple, marginTop: 6, fontSize: fontSize.small}}>{data?.createdAt?.toDate().toDateString()}</Text>
             </View>
 
         </View>
@@ -71,12 +74,12 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     title: {
-        fontSize: fontSize.middle,
-        marginBottom: 20,
+        fontSize: fontSize.large,
+        marginBottom: 5,
         textAlign: 'center'
     },
     contents: {
-        fontSize: fontSize.small,
+        fontSize: fontSize.middle,
     },
     field: {
         fontSize: fontSize.middle,
