@@ -23,7 +23,7 @@ type ModalProps = {
 };
 
 
-export default function Create() {
+export default function Guide() {
   const route = useRoute()
   const popAction = StackActions.pop(1);
   const { userData, followList, setFollowList, getFollowers } = useContext(UserDataContext)
@@ -83,19 +83,19 @@ export default function Create() {
   }
 
   return (
-
+  
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}>
       
         <View style={[styles.container, colorScheme.content]}>
-        {/* <View style={{paddingVertical: 10, paddingTop: 19}}>
+        <View style={{paddingVertical: 10, paddingTop: 19}}>
           <Feather name="chevron-left" size={30} color="white" onPress={() => {
-            setIsVisible(false)
+            navigation.goBack()
             } } />
-        </View> */}
+        </View>
           <TextInput
-            placeholder={`Name of the Recipe`}
+            placeholder={`Set the step by step instructions`}
             editable
             multiline
             numberOfLines={4}
@@ -108,13 +108,12 @@ export default function Create() {
             <Button
               label='Next'
               color={colors.lightPurple}
-              onPress={() => {console.log("Hello")}}
+              onPress={() => alert("POSTED")}
               style={{ marginHorizontal: 20, marginLeft: 10 }}
             />
           </View>
         </View>
       </KeyboardAvoidingView>
- 
 
   )
 }

@@ -41,59 +41,6 @@ export default function Home() {
         }, 2000);
       }, []);
 
-    // useEffect(() => {
-    //     const str = "Hello, こんにちは!";
-    //     const kilobyteSize = getKilobyteSize({ str: str });
-    //     console.log({ str, kilobyteSize });
-    // }, [])
-
-    // useEffect(() => {
-    //     const obj = {
-    //         name: 'name1',
-    //         age: 15,
-    //     }
-    //     const kilobyteSize = getKilobyteSize({ str: obj });
-    //     console.log({ obj, kilobyteSize });
-    // }, [])
-
-    useEffect(() => {
-        const array = ['name1', 'name2', 'name3']
-        const kilobyteSize = getKilobyteSize({ str: array });
-        console.log({ array, kilobyteSize });
-    }, [])
-
-    useLayoutEffect(() => {
-        navigation.setOptions({
-            headerRight: () => (
-                <IconButton
-                    icon="align-right"
-                    color={colors.lightPurple}
-                    size={24}
-                    onPress={() => headerButtonPress()}
-                    containerStyle={{ paddingRight: 15 }}
-                />
-            ),
-        });
-    }, [navigation]);
-
-    const headerButtonPress = () => {
-        alert('Tapped header button')
-    }
-
-
-    // useEffect(() => {
-    //     const tokensRef = doc(firestore, 'tokens', userData.id);
-    //     const tokenListner = onSnapshot(tokensRef, (querySnapshot) => {
-    //         if (querySnapshot.exists) {
-    //             const data = querySnapshot.data()
-    //             setToken(data)
-    //         } else {
-    //             console.log("No such document!");
-    //         }
-    //     })
-    //     return () => tokenListner()
-    // }, [])
-
     const getPosts = async () => {
         const usersRef = await collection(firestore, 'posts')
         const q = query(usersRef, orderBy("createdAt", "desc"));
@@ -129,7 +76,7 @@ export default function Home() {
 
     return (
         <ScreenTemplate>
-            <Pressable style={[styles.send, { top: deviceHeight - 240 }]} onPress={() =>
+            {/* <Pressable style={[styles.send, { top: deviceHeight - 240 }]} onPress={() =>
                 navigation.navigate('ModalStacks', {
                     screen: 'Create',
                     params: {
@@ -138,7 +85,7 @@ export default function Home() {
                     }
                 })} >
                 <Entypo name="plus" size={25} color="white" style={{ textAlign: 'center' }} />
-            </Pressable>
+            </Pressable> */}
             <FlatList
                 style={[{ marginBottom: 30 }, styles.main]}
                 data={postList}
@@ -150,31 +97,7 @@ export default function Home() {
                 }
 
             />
-
-            <Button
-                label='Go to Detail'
-                color={colors.primary}
-                onPress={() => navigation.navigate('Detail', { userData: userData, from: 'Home', title: userData.email })}
-            />
-            <Button
-                label='Open Modal'
-                color={colors.tertiary}
-                onPress={() => {
-                    navigation.navigate('ModalStacks', {
-                        screen: 'Post',
-                        params: {
-                            data: userData,
-                            from: 'Home screen'
-                        }
-                    })
-                }}
-            />
-            <Button
-                label='Send Notification'
-                color={colors.pink}
-                onPress={() => onNotificationPress()}
-                disable={token}
-            />
+          
 
         </ScreenTemplate>
     )

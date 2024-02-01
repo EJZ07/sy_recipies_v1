@@ -27,6 +27,14 @@ export const ModalStacks = () => {
             }}
           >
             <Stack.Screen
+              name='Create'
+              component={Create}
+              options={{
+                title: ctx.title,
+                headerBackTitle: '',
+              }}
+            />
+            <Stack.Screen
               name='Post'
               component={Post}
               options={{
@@ -42,14 +50,7 @@ export const ModalStacks = () => {
                 headerBackTitle: '',
               }}
             />
-            <Stack.Screen
-              name='Create'
-              component={Create}
-              options={{
-                title: ctx.title,
-                headerBackTitle: '',
-              }}
-            />
+
             <Stack.Screen
               name='Print'
               component={Print}

@@ -1,25 +1,21 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import FontIcon from 'react-native-vector-icons/FontAwesome5'
+import { AntDesign } from '@expo/vector-icons';
 import { colors } from 'theme'
 
 // stack navigators
 import { HomeNavigator, ProfileNavigator, ConnectNavigator } from '../stacks'
+import { ModalStacks } from '../stacks/ModalStacks/ModalStacks';
+import Create from '../../../scenes/Create';
+import Mock from '../../../scenes/Mock';
 
 const Tab = createBottomTabNavigator()
 
 const TabNavigator = () => {
   return (
     <Tab.Navigator
-      options={{
-        tabBarStyle: {
-          // backgroundColor: 'white',
-          // borderTopColor: 'gray',
-          // borderTopWidth: 1,
-          // paddingBottom: 5,
-          // paddingTop: 5,
-        }
-      }}
+     
       defaultScreenOptions={{
         headerShown: false,
         headerTransparent: true
@@ -29,47 +25,51 @@ const TabNavigator = () => {
         tabBarActiveTintColor: colors.lightPurple,
         tabBarInactiveTintColor: colors.gray,
       })}
-      initialRouteName="HomeTab"
+      initialRouteName="Home"
       swipeEnabled={false}
     >
       <Tab.Screen
-        name="HomeTab"
+        name="Home"
+        tabBarLabel="R"
         component={HomeNavigator}
         options={{
-          tabBarLabel: 'Home',
+          tabBarShowLabel: false,
           tabBarIcon: ({ color, size }) => (
             <FontIcon
               name="home"
               color={color}
-              size={size}
+              size={20}
             />
           ),
         }}
       />
       <Tab.Screen
         name="ConnectTab"
-        component={ConnectNavigator}
+       
+        component={Mock}
         options={{
-          tabBarLabel: 'Connect',
+          tabBarShowLabel: false,
           tabBarIcon: ({ color, size }) => (
-            <FontIcon
-              name="share-alt"
-              color={color}
-              size={size}
-            />
+            <AntDesign name="plussquareo" size={28} color={color} />
           ),
         }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            e.preventDefault()
+            navigation.navigate("Create")
+          },
+        })}
       />
       <Tab.Screen
         name="ProfileTab"
         component={ProfileNavigator}
         options={{
-          tabBarLabel: 'Profile',
+          tabBarShowLabel: false,
           tabBarIcon: ({ color, size }) => (
             <FontIcon
               name="user"
               color={color}
-              size={size}
+              size={20}
             />
           ),
         }}

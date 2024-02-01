@@ -9,6 +9,8 @@ import { setDoc, doc } from 'firebase/firestore';
 import { UserDataContext } from "../../../context/UserDataContext";
 import * as Device from 'expo-device';
 import { expoProjectId } from "../../../config";
+import Create from "../../../scenes/Create";
+import { CreateNavigator } from "../stacks/CreateNavigator";
 
 const Stack = createStackNavigator()
 
@@ -69,6 +71,9 @@ export default function RootStack() {
         name='HomeRoot'
         component={TabNavigator}
       />
+      <Stack.Screen 
+      name="Create"
+      component={CreateNavigator} />
       <Stack.Group
         screenOptions={{
           presentation: 'modal',

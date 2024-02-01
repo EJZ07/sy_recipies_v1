@@ -7,11 +7,13 @@ export const FlagContext = createContext();
 
 export const FlagContextProvider = (props) => {
   const [rerender, setRerender] = useState(false)
+  const [createVisible, setCreateVisible] = useState(false)
+  const [selection, setSelection] = useState({})
 
   return (
     <FlagContext.Provider
       value={{
-        rerender, setRerender
+        rerender, setRerender, createVisible, setCreateVisible, selection, setSelection
       }}
     >
       {props.children}
