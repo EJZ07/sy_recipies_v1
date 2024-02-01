@@ -4,6 +4,7 @@ import { HomeTitleContext } from "../../../../context/HomeTitleContext";
 
 import Post from "../../../../scenes/post";
 import Print from "../../../../scenes/print";
+import Create from "../../../../scenes/Create";
 import Otheruser from "../../../../scenes/Otheruser";
 
 const Stack = createStackNavigator()
@@ -36,6 +37,14 @@ export const ModalStacks = () => {
             <Stack.Screen
               name='Other-User'
               component={Otheruser}
+              options={{
+                title: ctx.title,
+                headerBackTitle: '',
+              }}
+            />
+            <Stack.Screen
+              name='Create'
+              component={Create}
               options={{
                 title: ctx.title,
                 headerBackTitle: '',

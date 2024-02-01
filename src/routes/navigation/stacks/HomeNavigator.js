@@ -5,7 +5,7 @@ import { ColorSchemeContext } from '../../../context/ColorSchemeContext'
 import { lightProps, darkProps } from './navigationProps/navigationProps'
 import HeaderStyle from './headerComponents/HeaderStyle'
 
-import Home from '../../../scenes/home'
+import Home from '../../../scenes/Home'
 import Detail from '../../../scenes/detail'
 
 const Stack = createStackNavigator()
@@ -27,7 +27,9 @@ export const HomeNavigator = () => {
             <Stack.Screen
               name="Home"
               component={Home}
+              
               options={({ navigation }) => ({
+                unmountOnBlur: true,
                 headerBackground: scheme === 'dark' ? null: () => <HeaderStyle />,
               })}
             />

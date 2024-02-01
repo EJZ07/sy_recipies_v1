@@ -21,10 +21,11 @@ Notifications.setNotificationHandler({
 });
 
 export default function RootStack() {
-  const { userData } = useContext(UserDataContext)
+  const { userData, getFollowers } = useContext(UserDataContext)
   const isIos = Platform.OS === 'ios'
 
   useEffect(() => {
+
     (async () => {
       const isDevice = Device.isDevice
       if(!isDevice) return
@@ -47,6 +48,8 @@ export default function RootStack() {
         id: userData.id
       })
     })();
+
+    getFollowers()
   }, [userData])
 
   useEffect(() => {

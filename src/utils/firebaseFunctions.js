@@ -1,5 +1,5 @@
 import { firestore, } from "../firebase/config";
-import { doc, onSnapshot, collection, query, getDocs, setDoc, deleteDoc } from 'firebase/firestore';
+import { doc, onSnapshot, collection, query, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
 
 
 
@@ -27,11 +27,29 @@ const unfollow = async ({ userData, data }) => {
       const followRef = await doc(firestore, 'users', userData.id, 'following', data.id)
       await deleteDoc(followRef)
       console.log("Deleted Follower: ", followRef.id)
-      navigation.goBack()
+    //   navigation.goBack()
     } catch (e) {
       console.log("Error adding data: ", e)
     }
 
 }
 
-export { follow, unfollow}
+const addPost = async ({userData, data}) => {
+    const followRef = await doc(collection(firestore, 'posts', ))
+    await setDoc(followRef, data)
+}   
+
+const getUser = async ({data}) => {
+    const currentUserRef = doc(firestore, "users", data.id)
+    const docSnap = await getDoc(currentUserRef)
+    let user = {}
+    if (docSnap.exists()) {
+        console.log("Document Data: ", docSnap.data())
+        return docSnap.data()
+      
+    }else{
+        return "No such document"
+    }
+}
+
+export { follow, unfollow, addPost, getUser}

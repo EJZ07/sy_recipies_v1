@@ -4,6 +4,7 @@ import { Provider } from 'jotai'
 import 'utils/ignore'
 import { ColorSchemeContextProvider } from './context/ColorSchemeContext'
 import { UserDataContextProvider } from './context/UserDataContext'
+import { FlagContextProvider } from './context/FlagContext'
 
 // assets
 import { imageAssets } from 'theme/images'
@@ -35,7 +36,9 @@ const App = () => {
     <Provider>
       <ColorSchemeContextProvider>
         <UserDataContextProvider>
+          <FlagContextProvider>
           <Router />
+          </FlagContextProvider>
         </UserDataContextProvider>
       </ColorSchemeContextProvider>
     </Provider>

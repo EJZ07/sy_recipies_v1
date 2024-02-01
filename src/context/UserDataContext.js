@@ -12,6 +12,7 @@ export const UserDataContextProvider = (props) => {
   useEffect(() => {
     getFollowers()
   }, [])
+
   const getFollowers = async () => {
     const followingRef = await collection(firestore, 'users', userData.id, 'following')
     const q = query(followingRef);
@@ -31,7 +32,7 @@ export const UserDataContextProvider = (props) => {
   return (
     <UserDataContext.Provider
       value={{
-        userData, setUserData, followList, setFollowList
+        userData, setUserData, followList, setFollowList, getFollowers
       }}
     >
       {props.children}

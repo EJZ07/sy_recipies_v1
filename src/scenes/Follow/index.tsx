@@ -18,7 +18,7 @@ export default function Follow() {
   const navigation = useNavigation()
   const db = getFirestore();
 
-  const { userData } = useContext(UserDataContext)
+  const { userData, followList } = useContext(UserDataContext)
   const { scheme } = useContext(ColorSchemeContext)
   const [userList, setUserList] = useState([])
   const [refreshing, setRefreshing] = useState(false);
@@ -61,7 +61,8 @@ export default function Follow() {
             </View>
 
           </View>
-          <AntDesign name="staro" size={24} color={colors.white} />
+          {user.id === userData.id ? "" : <AntDesign name={followList.includes(user.id) ? "star" : "staro"} size={24} color={followList.includes(user.id) ? colors.lightyellow : colors.white} />}
+
         </View>
 
 
