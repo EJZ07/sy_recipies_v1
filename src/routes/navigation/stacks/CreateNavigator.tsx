@@ -59,9 +59,14 @@ export const CreateNavigator = () => {
             name="Guide"
             component={Guide}
             options={{
+              headerShown: false,
+              headerStyle: {
+                backgroundColor: '#343536',
 
-              headerBackground: scheme === 'dark' ? null : () => <HeaderStyle />,
+              },
+
             }}
+
           />
         </Stack.Navigator>
 

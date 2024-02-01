@@ -89,7 +89,7 @@ export default function Guide() {
         style={styles.container}>
       
         <View style={[styles.container, colorScheme.content]}>
-        <View style={{paddingVertical: 10, paddingTop: 19}}>
+        <View style={{paddingVertical: 10,paddingTop: 40, paddingBottom: 15}}>
           <Feather name="chevron-left" size={30} color="white" onPress={() => {
             navigation.goBack()
             } } />

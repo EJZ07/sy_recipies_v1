@@ -108,7 +108,7 @@ export default function Create() {
             <Button
               label='Next'
               color={colors.lightPurple}
-              onPress={() => {console.log("Hello")}}
+              onPress={() => navigation.navigate("Guide")}
               style={{ marginHorizontal: 20, marginLeft: 10 }}
             />
           </View>
