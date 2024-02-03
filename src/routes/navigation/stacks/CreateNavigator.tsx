@@ -13,8 +13,9 @@ import Modal from 'react-native-modal'
 import Home from '../../../scenes/Home'
 import Detail from '../../../scenes/detail'
 import Create from '../../../scenes/Create'
-import Guide from '../../../scenes/Guide'
+import Ingredients from '../../../scenes/Ingredients'
 import { Feather } from '@expo/vector-icons'
+import Recipe from '../../../scenes/Recipe'
 
 const Stack = createStackNavigator()
 
@@ -43,7 +44,7 @@ export const CreateNavigator = () => {
             component={Create}
             options={{
               header: () => (
-                <View style={{ paddingTop: 55, paddingLeft: 10 }}>
+                <View style={{ paddingTop: 65, paddingLeft: 10 }}>
                   <Feather name="chevron-left" size={30} color="white" onPress={() => { navigation.goBack() }} />
                 </View>
               ),
@@ -57,7 +58,20 @@ export const CreateNavigator = () => {
           />
           <Stack.Screen
             name="Guide"
-            component={Guide}
+            component={Ingredients}
+            options={{
+              headerShown: false,
+              headerStyle: {
+                backgroundColor: '#343536',
+
+              },
+
+            }}
+
+          />
+          <Stack.Screen
+            name="Recipe"
+            component={Recipe}
             options={{
               headerShown: false,
               headerStyle: {

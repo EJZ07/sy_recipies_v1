@@ -8,6 +8,7 @@ export const UserDataContext = createContext();
 export const UserDataContextProvider = (props) => {
   const [userData, setUserData] = useState('')
   const [followList, setFollowList] = useState([])
+  const [selection, setSelection] = useState({})
 
   useEffect(() => {
     getFollowers()
@@ -20,10 +21,13 @@ export const UserDataContextProvider = (props) => {
     const querySnapshot = await getDocs(q);
 
     // console.log("THE SNAPSHOT: ", querySnapshot)
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      temp.push(doc.id)
-    });
+    if (querySnapshot) {
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        temp.push(doc.id)
+      });
+    }
+
 
     setFollowList(temp)
   }
@@ -32,7 +36,7 @@ export const UserDataContextProvider = (props) => {
   return (
     <UserDataContext.Provider
       value={{
-        userData, setUserData, followList, setFollowList, getFollowers
+        userData, setUserData, followList, setFollowList, getFollowers,  selection, setSelection
       }}
     >
       {props.children}

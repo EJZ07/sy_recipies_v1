@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, Dispatch, SetStateAction } from 'react'
-import { Text, View, StyleSheet, TextInput, KeyboardAvoidingView, Platform } from 'react-native'
+import { Text, View, StyleSheet, TextInput, KeyboardAvoidingView, Platform, Dimensions } from 'react-native'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import Button from '../../components/Button'
 import { useRoute, useFocusEffect, useNavigation, StackActions } from '@react-navigation/native'
@@ -15,7 +15,6 @@ import { addPost, follow, unfollow } from '../../utils/firebaseFunctions'
 import { Feather } from '@expo/vector-icons';
 import moment from 'moment'
 import styles from './styles'
-import Modal from 'react-native-modal'
 
 type ModalProps = {
   isVisible?: boolean;
@@ -26,7 +25,7 @@ type ModalProps = {
 export default function Create() {
   const route = useRoute()
   const popAction = StackActions.pop(1);
-  const { userData, followList, setFollowList, getFollowers } = useContext(UserDataContext)
+  const { userData, selection, setSelection} = useContext(UserDataContext)
   const { rerender, setRerender } = useContext(FlagContext)
   const { scheme } = useContext(ColorSchemeContext)
   const [date, setDate] = useState('')
@@ -69,6 +68,11 @@ export default function Create() {
     loadStorage()
   }
 
+  const handleSave = () => {
+    setSelection({...selection, title: text})
+    navigation.navigate("Guide")
+  }
+
   const handlePost = () => {
     const data = {
       id: userData.id,
@@ -84,37 +88,42 @@ export default function Create() {
 
   return (
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}>
-      
-        <View style={[styles.container, colorScheme.content]}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}>
+
+      <View style={[styles.container, colorScheme.content]}>
         {/* <View style={{paddingVertical: 10, paddingTop: 19}}>
           <Feather name="chevron-left" size={30} color="white" onPress={() => {
             setIsVisible(false)
             } } />
         </View> */}
+        <View style={{ flexDirection: "column", paddingBottom: 5,  }}>
           <TextInput
             placeholder={`Name of the Recipe`}
+            placeholderTextColor={colors.gray}
             editable
-            multiline
-            numberOfLines={4}
+         
+            numberOfLines={1}
             maxLength={40}
             onChangeText={text => setText(text)}
             value={text}
-            style={{ padding: 10, color: colorScheme.text, fontSize: 25 }}
+            style={{ color: colorScheme.text, fontSize: 25, paddingBottom: 5 }}
           />
-          <View style={{ flex: 1, marginLeft: 10 }} >
-            <Button
-              label='Next'
-              color={colors.lightPurple}
-              onPress={() => navigation.navigate("Guide")}
-              style={{ marginHorizontal: 20, marginLeft: 10 }}
-            />
-          </View>
+         <View style={{  backgroundColor: 'white', borderTopColor: "white", borderRadius: 12, height: 1}} />
         </View>
-      </KeyboardAvoidingView>
- 
+
+        
+          <Button
+            label='Next'
+            color={colors.lightPurple}
+            onPress={handleSave}
+            style={{ marginHorizontal: 20, marginLeft: 10 }}
+          />
+      
+      </View>
+    </KeyboardAvoidingView>
+
 
   )
 }

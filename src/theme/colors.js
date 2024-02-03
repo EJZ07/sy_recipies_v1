@@ -15,6 +15,7 @@ const colors = {
   darkInput: '#303030',
   primaryText: '#2e2e2d',
   lightyellow: '#ffffe0',
+  green: '#42e382',
   black: '#000000',
 }
 
