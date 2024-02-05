@@ -1,5 +1,5 @@
 import { firestore, } from "../firebase/config";
-import { doc, onSnapshot, collection, query, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
+import { doc, onSnapshot, collection, query, getDoc, setDoc, deleteDoc, onVal } from 'firebase/firestore';
 
 
 
@@ -36,6 +36,10 @@ const unfollow = async ({ userData, data }) => {
 
 const addPost = async ({userData, data}) => {
     const postRef = await doc(collection(firestore, 'posts' ))
+    // onVal(postRef, (snapshot) => {
+    //     const data = snapshot.val()
+    //     console.log("Data Snapshot: ", data)
+    // })
     await setDoc(postRef, data)
 
     const uPostRef = await doc(collection(firestore, 'users', userData.id, 'posts' ))
@@ -47,7 +51,7 @@ const getUser = async ({data}) => {
     const docSnap = await getDoc(currentUserRef)
     let user = {}
     if (docSnap.exists()) {
-        console.log("Document Data: ", docSnap.data())
+        // console.log("Document Data: ", docSnap.data())
         return docSnap.data()
       
     }else{

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, Dispatch, SetStateAction, useRef } from 'react'
-import { Text, View, StyleSheet, TextInput, KeyboardAvoidingView, Platform } from 'react-native'
+import { Text, View, StyleSheet, TextInput, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import Button from '../../components/Button'
 import { useRoute, useFocusEffect, useNavigation, StackActions } from '@react-navigation/native'
@@ -16,6 +16,8 @@ import { addPost, follow, unfollow } from '../../utils/firebaseFunctions'
 import { Feather } from '@expo/vector-icons';
 import moment from 'moment'
 import styles from './styles'
+import { ScrollView } from 'react-native-gesture-handler'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 type ModalProps = {
   isVisible?: boolean;
@@ -33,7 +35,7 @@ export default function Ingredients() {
   const [date, setDate] = useState('')
   const [text, setText] = useState('')
   const [message, setMessage] = useState("")
-  const [ingredients, setIngredients] = useState([""])
+  const [ingredients, setIngredients] = useState(selection.ingredients)
   const [isVisible, setIsVisible] = useState(true)
   const navigation = useNavigation()
   const isDark = scheme === 'dark'
@@ -92,84 +94,85 @@ export default function Ingredients() {
     })
 
     try {
-      if(flag) throw "No ingredients"
+      if (flag) throw "No ingredients"
       else ""
-    }catch (e) {
-    setMessage("*Please enter an ingredient")
+    } catch (e) {
+      setMessage("*Please enter an ingredient")
+    }
+
   }
 
-}
-
-return (
-
-  <KeyboardAvoidingView
-    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    style={styles.container}>
+  return (
+    <View>
 
 
-    <View style={{ paddingVertical: 10, paddingTop: 40, paddingBottom: 15 }}>
-      <Feather name="chevron-left" size={30} color="white" onPress={() => {
-        navigation.goBack()
-      }} />
-    </View>
-    <View style={{ padding: 12, paddingTop: 0, }}>
-      <Text style={[styles.title, { color: colorScheme.text }]}>Ingredients</Text>
-      <View style={{ flexWrap: "wrap", flexDirection: "row", alignItems: "center", }}>
-        {
-          ingredients.map((item, index) => (
-            <View style={{ paddingRight: 10, paddingBottom: 10 }}>
-              <View style={{ borderWidth: 1, borderColor: colorScheme.text, borderRadius: 12 }}>
-                <TextInput
-                  ref={inputRef}
-                  key={index}
-                  placeholder={`Paprika`}
-                  placeholderTextColor={colors.gray}
-                  editable
-                  numberOfLines={1}
-                  maxLength={20}
-                  onChangeText={(e) => handleIngredients(index, e)}
-                  value={item}
-                  style={{ padding: 10, color: colorScheme.text, fontSize: 25, }}
-                />
+
+      <View style={{ paddingVertical: 10, paddingTop: 40, paddingBottom: 15 }}>
+        <Feather name="chevron-left" size={30} color="white" onPress={() => {
+          navigation.goBack()
+        }} />
+      </View>
+      <ScrollView bounces={false}  keyboardShouldPersistTaps={'always'} keyboardDismissMode="on-drag" >
+    
+          <View style={{ padding: 12, paddingTop: 0, }}>
+            <Text style={[styles.title, { color: colorScheme.text }]}>Ingredients</Text>
+            <View style={{ flexWrap: "wrap", flexDirection: "row", alignItems: "center", }}>
+              {
+                ingredients.map((item, index) => (
+                  <View style={{ paddingRight: 10, paddingBottom: 10 }}>
+                    <View style={{ borderWidth: 1, borderColor: colorScheme.text, borderRadius: 12 }}>
+                      <TextInput
+                        ref={inputRef}
+                        key={index}
+                        placeholder={`Paprika`}
+                        placeholderTextColor={colors.gray}
+                        editable
+                        numberOfLines={1}
+                        maxLength={20}
+                        onChangeText={(e) => handleIngredients(index, e)}
+                        value={item}
+                        style={{ padding: 10, color: colorScheme.text, fontSize: 25, }}
+                      />
+                    </View>
+                  </View>
+                )
+                )
+              }
+
+              <View style={{ paddingLeft: 5 }}>
+                <AntDesign name="pluscircle" size={34} color={colors.gray} onPress={() => { setIngredients([...ingredients, ""]); inputRef?.current?.focus(); }} />
               </View>
             </View>
-          )
-          )
-        }
-
-        <View style={{ paddingLeft: 5 }}>
-          <AntDesign name="pluscircle" size={34} color={colors.gray} onPress={() => { setIngredients([...ingredients, ""]); inputRef?.current?.focus(); }} />
-        </View>
-      </View>
-      {message.length > 1 ?
-        <Text style={{ color: colors.secondary }}>{message}</Text>
-        : ""}
-    </View>
-
-
-    <View style={{ flex: 1, marginLeft: 10, flexDirection: "row", justifyContent: "center" }} >
-      {
-        ingredients.length > 1 ?
-          <View style={{ marginRight: 10 }}>
-            <Button
-              label='Remove'
-              color={colors.secondary}
-              onPress={() => handleRemoveIngredients()}
-              style={{ marginHorizontal: 20, marginLeft: 10, marginRight: 10 }}
-            />
+            {message.length > 1 ?
+              <Text style={{ color: colors.secondary }}>{message}</Text>
+              : ""}
           </View>
 
-          : ""
-      }
-      <Button
-        label='Next'
-        color={colors.lightPurple}
-        onPress={() => handleNext()}
-        style={{ marginHorizontal: 20, marginLeft: 10 }}
-      />
+
+          <View style={{ flex: 1,  flexDirection: "row", justifyContent: "center" }} >
+            {
+              ingredients.length > 1 ?
+                <View style={{ marginRight: 10 }}>
+                  <Button
+                    label='Remove'
+                    color={colors.secondary}
+                    onPress={() => handleRemoveIngredients()}
+                    style={{ marginHorizontal: 20, marginLeft: 10, marginRight: 10 }}
+                  />
+                </View>
+
+                : ""
+            }
+            <Button
+              label='Next'
+              color={colors.lightPurple}
+              onPress={() => handleNext()}
+              style={{ marginHorizontal: 20, marginLeft: 10 }}
+            />
+          </View>
+       
+      </ScrollView>
+
     </View>
-
-  </KeyboardAvoidingView>
-
-)
+  )
 }

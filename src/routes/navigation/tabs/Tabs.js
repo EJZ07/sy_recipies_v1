@@ -33,6 +33,7 @@ const TabNavigator = () => {
         tabBarLabel="R"
         component={HomeNavigator}
         options={{
+          headerShown: false,
           tabBarShowLabel: false,
           tabBarIcon: ({ color, size }) => (
             <FontIcon

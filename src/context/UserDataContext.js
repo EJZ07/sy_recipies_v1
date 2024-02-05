@@ -8,7 +8,7 @@ export const UserDataContext = createContext();
 export const UserDataContextProvider = (props) => {
   const [userData, setUserData] = useState('')
   const [followList, setFollowList] = useState([])
-  const [selection, setSelection] = useState({})
+  const [selection, setSelection] = useState({title: "", image: "", ingredients: [""], steps: [{ text: "", image: "" }]})
 
   useEffect(() => {
     getFollowers()

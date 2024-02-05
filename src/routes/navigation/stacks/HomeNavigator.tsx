@@ -10,6 +10,7 @@ import HeaderStyle from './headerComponents/HeaderStyle'
 
 import Home from '../../../scenes/Home'
 import Detail from '../../../scenes/detail'
+import CheckRecipe from '../../../scenes/CheckRecipe'
 
 const Stack = createStackNavigator()
 
@@ -40,7 +41,7 @@ export const HomeNavigator = () => {
               component={Home}
 
               options={() => ({
-                unmountOnBlur: true,
+                
               
                 header: () => (
                   <View style={{alignItems: "center", paddingBottom: 5}}>
@@ -54,12 +55,17 @@ export const HomeNavigator = () => {
               })}
             />
             <Stack.Screen
-              name="Detail"
-              component={Detail}
+              name="Look"
+              component={CheckRecipe}
+              
+              
               options={{
-                title: ctx.title,
-                headerBackground: scheme === 'dark' ? null : () => <HeaderStyle />,
+                headerTransparent: true,
+                headerTitle: '',
+                headerBackTitle: ""
+          
               }}
+              
             />
           </Stack.Navigator>
         )}

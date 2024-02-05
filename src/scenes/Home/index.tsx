@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext, useLayoutEffect, useCallback} from 'react'
-import { Text, View, ScrollView, StyleSheet, Pressable, useWindowDimensions, Image, FlatList, RefreshControl,} from 'react-native'
+import React, { useEffect, useState, useContext, useLayoutEffect, useCallback } from 'react'
+import { Text, View, ScrollView, StyleSheet, Pressable, useWindowDimensions, Image, FlatList, RefreshControl, } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import IconButton from '../../components/IconButton'
 import ScreenTemplate from '../../components/ScreenTemplate'
@@ -20,14 +20,14 @@ import styles from './styles'
 export default function Home() {
     const navigation = useNavigation()
     const deviceHeight = useWindowDimensions().height;
-
+    const deviceWidth = useWindowDimensions().width;
     const [token, setToken] = useState('')
     const [postList, setPostList] = useState([])
     const [refreshing, setRefreshing] = useState(false);
     const { userData } = useContext(UserDataContext)
     const { rerender } = useContext(FlagContext)
     const { scheme } = useContext(ColorSchemeContext)
-    
+
     const isDark = scheme === 'dark'
     const colorScheme = {
         content: isDark ? styles.darkContent : styles.lightContent,
@@ -37,9 +37,9 @@ export default function Home() {
         setRefreshing(true);
         getPosts();
         setTimeout(() => {
-          setRefreshing(false);
+            setRefreshing(false);
         }, 2000);
-      }, []);
+    }, []);
 
     const getPosts = async () => {
         const usersRef = await collection(firestore, 'posts')
@@ -86,18 +86,22 @@ export default function Home() {
                 })} >
                 <Entypo name="plus" size={25} color="white" style={{ textAlign: 'center' }} />
             </Pressable> */}
-            <FlatList
-                style={[{ marginBottom: 30 }, styles.main]}
-                data={postList}
-                keyExtractor={(item) => item?.id + (Math.random() * 9999)}
-                renderItem={({ index, item }) => <Post key={index} data={item} />}
-                showsVerticalScrollIndicator={false}
-                refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }
+        
+               
+                 <FlatList
+                 numColumns={2}
+                    style={[, styles.main, {width: deviceWidth}]}
+                    data={postList}
+                    keyExtractor={(item) => item?.id + (Math.random() * 9999)}
+                    renderItem={({ index, item }) => <Post key={index} index={index} data={item} />}
+                    showsVerticalScrollIndicator={false}
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                    }
 
-            />
-          
+                />
+         
+
 
         </ScreenTemplate>
     )
