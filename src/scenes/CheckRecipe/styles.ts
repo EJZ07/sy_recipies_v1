@@ -17,7 +17,6 @@ const styles = StyleSheet.create({
     title: {
       fontSize: fontSize.large,
     
-      textAlign: 'center'
     },
     field: {
       fontSize: fontSize.middle,

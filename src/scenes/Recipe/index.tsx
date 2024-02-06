@@ -71,7 +71,8 @@ export default function Recipe() {
       title: selection.title,
       ingredients: selection.ingredients,
       steps: steps,
-
+      likeCount: 0,
+      comments: [],
       createdAt: new Date()
     }
     addPost({ userData, data })

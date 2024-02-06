@@ -51,7 +51,7 @@ export default function Home() {
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
             console.log(doc.id, " => ", doc.data());
-            temp.push(doc.data())
+            temp.push({id: doc.id, data: doc.data()})
             // setUserList([...userList, ...[doc.data()]])
         });
 
@@ -92,8 +92,8 @@ export default function Home() {
                  numColumns={2}
                     style={[, styles.main, {width: deviceWidth}]}
                     data={postList}
-                    keyExtractor={(item) => item?.id + (Math.random() * 9999)}
-                    renderItem={({ index, item }) => <Post key={index} index={index} data={item} />}
+                    keyExtractor={(item) => item?.data.id + (Math.random() * 9999)}
+                    renderItem={({ index, item }) => <Post key={item.id} index={index} data={item.data} id={item.id} />}
                     showsVerticalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

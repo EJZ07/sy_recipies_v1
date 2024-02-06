@@ -1,5 +1,5 @@
 import { firestore, } from "../firebase/config";
-import { doc, onSnapshot, collection, query, getDoc, setDoc, deleteDoc, onVal } from 'firebase/firestore';
+import { doc, onSnapshot, collection, query, getDoc, setDoc, deleteDoc, onVal, FieldValue } from 'firebase/firestore';
 
 
 
@@ -11,52 +11,206 @@ const follow = async ({ userData, data }) => {
         try {
 
             const followRef = await doc(firestore, 'users', userData.id, 'following', data.id)
-            await setDoc(followRef, data)
+            const items = {
+                avatar: data.avatar,
+                name: data.name,
+                id: data.id
+            }
+            await setDoc(followRef, items)
             console.log("New follow: ", followRef.id)
         } catch (e) {
             console.log("Error adding data: ", e)
         }
+        try{
+            const followRef = await doc(firestore, 'users', data.id)
+            const docSnap = await getDoc(followRef)
+            console.log("DOC SNAP: ", docSnap.data())
+            if(docSnap.data().followers){
+                setDoc(followRef, { followers: docSnap.data().followers + 1 }, { merge: true })
+            }else{
+                setDoc(followRef, { followers: 1 }, { merge: true })
+            }
+        }catch(e){
+            console.log("Incrementing Follower Count Error: ", e )
+        }
+
+        try {
+
+            const followRef = await doc(collection(firestore, 'followings'))
+            const item = {
+                user: userData.id,
+                followedBy: data.id,
+                timestamp: new Date()
+            }
+
+            await setDoc(followRef, item)
+            console.log("User Followed was saved")
+        } catch (e) {
+            console.log("Error adding data: ", e)
+        }
+       
     }
+
+}
+
+const save = async ({ userData, data, id }) => {
+
+    if (data.id == userData.id) {
+        alert("Oops! You made this post");
+    } else {
+        try {
+
+            const saveRef = await doc(collection(firestore, 'saved'))
+            const item = {
+                saver: userData.id,
+                poster: data.id,
+                post: id
+            }
+
+            await setDoc(saveRef, item)
+            console.log("Ref was saved")
+        } catch (e) {
+            console.log("Error adding data: ", e)
+        }
+
+        const uPostRef = await doc(firestore, 'users', userData.id, 'saved', id)
+
+        await setDoc(uPostRef, data)
+    }
+
+}
+
+const unsave = async ({ userData, data, id }) => {
+
+    if (data.id == userData.id) {
+        alert("Oops! You made this post");
+    } else {
+        try {
+
+            const uSaveRef = await doc(firestore, 'users', userData.id, 'saved', id)
+            await deleteDoc(uSaveRef)
+            console.log("Ref was deleted")
+        } catch (e) {
+            console.log("Error adding data: ", e)
+        }
+
+        const saveRef = await doc(firestore, 'saved', id)
+        await deleteDoc(saveRef)
+    }
+
+}
+
+const like = async ({ userData, data, id }) => {
+    try {
+        const likeRef = await doc(firestore, 'posts', id)
+        const docSnap = await getDoc(likeRef)
+        console.log("DOC SNAP: ", docSnap.data())
+        if(docSnap.data().likeCount){
+            setDoc(likeRef, { likeCount: docSnap.data().likeCount + 1 }, { merge: true })
+        }else{
+            setDoc(likeRef, { likeCount: 1 }, { merge: true })
+        }
+        
+       
+
+
+    } catch (e) {
+        console.log("Error adding data: ", e)
+    }
+
+    const uPostRef = await doc(firestore, 'users', userData.id, 'liked', id)
+
+    await setDoc(uPostRef, data)
+
+}
+
+const unLike = async ({ userData, data, id }) => {
+    try {
+        const likeRef = await doc(firestore, 'posts', id)
+        const docSnap = await getDoc(likeRef)
+        console.log("DOC SNAP: ", docSnap.data())
+
+        if(docSnap.data().likeCount){
+            setDoc(likeRef, { likeCount: docSnap.data().likeCount - 1  }, { merge: true })
+        }else{
+            setDoc(likeRef, { likeCount: 0}, { merge: true })
+        }
+
+
+
+
+
+    } catch (e) {
+        console.log("Error adding data: ", e)
+    }
+
+    const uPostRef = await doc(firestore, 'users', userData.id, 'liked', id)
+
+    await deleteDoc(uPostRef, data)
+    console.log("Ref was deleted")
 
 }
 
 const unfollow = async ({ userData, data }) => {
-    
+
     try {
 
-      const followRef = await doc(firestore, 'users', userData.id, 'following', data.id)
-      await deleteDoc(followRef)
-      console.log("Deleted Follower: ", followRef.id)
-    //   navigation.goBack()
+        const followRef = await doc(firestore, 'users', userData.id, 'following', data.id)
+        await deleteDoc(followRef)
+        console.log("Deleted Follower: ", followRef.id)
+        //   navigation.goBack()
     } catch (e) {
-      console.log("Error adding data: ", e)
+        console.log("Error adding data: ", e)
+    }
+
+    try{
+        const followRef = await doc(firestore, 'users', data.id)
+        const docSnap = await getDoc(followRef)
+        console.log("DOC SNAP: ", docSnap.data())
+        if(docSnap.data().followers){
+            setDoc(followRef, { followers: docSnap.data().followers - 1 }, { merge: true })
+        }else{
+            setDoc(followRef, { followers: 1 }, { merge: true })
+        }
+    }catch(e){
+        console.log("Decrementing Follower Count Error: ", e )
+    }
+
+    try {
+
+        const followRef = await doc(collection(firestore, 'followings'))
+
+        await deleteDoc(followRef)
+        console.log("User Followed was saved")
+    } catch (e) {
+        console.log("Error deleting data: ", e)
     }
 
 }
 
-const addPost = async ({userData, data}) => {
-    const postRef = await doc(collection(firestore, 'posts' ))
+const addPost = async ({ userData, data }) => {
+    const postRef = await doc(collection(firestore, 'posts'))
     // onVal(postRef, (snapshot) => {
     //     const data = snapshot.val()
     //     console.log("Data Snapshot: ", data)
     // })
     await setDoc(postRef, data)
 
-    const uPostRef = await doc(collection(firestore, 'users', userData.id, 'posts' ))
+    const uPostRef = await doc(collection(firestore, 'users', userData.id, 'posts'))
     await setDoc(uPostRef, data)
-}   
+}
 
-const getUser = async ({data}) => {
+const getUser = async ({ data }) => {
     const currentUserRef = doc(firestore, "users", data.id)
     const docSnap = await getDoc(currentUserRef)
     let user = {}
     if (docSnap.exists()) {
         // console.log("Document Data: ", docSnap.data())
         return docSnap.data()
-      
-    }else{
+
+    } else {
         return "No such document"
     }
 }
 
-export { follow, unfollow, addPost, getUser}
+export { follow, unfollow, addPost, getUser, save, unsave, like, unLike }

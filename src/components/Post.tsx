@@ -15,7 +15,7 @@ export default function Post(props) {
     const deviceWidth = useWindowDimensions().width;
     const navigation = useNavigation();
     const { scheme } = useContext(ColorSchemeContext)
-    const { data, index } = props
+    const { data, index, id } = props
     const isDark = scheme === 'dark'
     const [user, setUser] = useState({})
     const [randomInt, setRandomInt] = useState(0)
@@ -47,10 +47,11 @@ export default function Post(props) {
         <Pressable style={[colorScheme.content, styles.plate, { width: deviceWidth / 2, }]} onPress={() => {
             navigation.navigate(
                 'Look',
-                {data: data,})
+                {data: data,
+                id: id})
         }}>
             {
-                index % 2 != 0 ? <View style={styles.right}>
+                index % 2 != 0 ? <View style={[styles.right, { width: deviceWidth / 2.1,}]}>
                     <View style={{ flexDirection: "column", alignItems: "flex-start" }}>
                         <Text style={[styles.title, { color: colorScheme.text }]} adjustsFontSizeToFit={true}  numberOfLines={2}>{data?.title}</Text>
                         <Text style={[styles.contents, { color: colorScheme.text }]}>{user?.fullName}</Text>
