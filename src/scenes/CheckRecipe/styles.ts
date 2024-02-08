@@ -18,6 +18,9 @@ const styles = StyleSheet.create({
       fontSize: fontSize.large,
     
     },
+    ingredients: {
+      paddingVertical: 16
+    },
     field: {
       fontSize: fontSize.middle,
       textAlign: 'center',

@@ -52,13 +52,13 @@ export default function Post(props) {
         }}>
             {
                 index % 2 != 0 ? <View style={[styles.right, { width: deviceWidth / 2.1,}]}>
-                    <View style={{ flexDirection: "column", alignItems: "flex-start" }}>
-                        <Text style={[styles.title, { color: colorScheme.text }]} adjustsFontSizeToFit={true}  numberOfLines={2}>{data?.title}</Text>
+                    <View style={{ flexDirection: "column", alignItems: "flex-start", width: 130 }}>
+                        <Text style={[styles.title, { color: colorScheme.text }]} adjustsFontSizeToFit={true} numberOfLines={2}>{data?.title}</Text>
                         <Text style={[styles.contents, { color: colorScheme.text }]}>{user?.fullName}</Text>
                     </View>
                     <View style={{ flexDirection: "row", gap: 5 }}>
                         <AntDesign name="hearto" size={18} color={colorScheme.text} />
-                        <Text style={[styles.contents, { color: colorScheme.text }]}>40</Text>
+                        <Text style={[styles.contents, { color: colorScheme.text }]}>{data?.likeCount}</Text>
                     </View>
                 </View> : ""
             }
@@ -77,7 +77,7 @@ export default function Post(props) {
                     </View>
                     <View style={{ flexDirection: "row", gap: 5 }}>
                         <AntDesign name="hearto" size={18} color={colorScheme.text} />
-                        <Text style={[styles.contents, { color: colorScheme.text }]}>40</Text>
+                        <Text style={[styles.contents, { color: colorScheme.text }]}>{data?.likeCount}</Text>
                     </View>
                 </View> : ""
             }

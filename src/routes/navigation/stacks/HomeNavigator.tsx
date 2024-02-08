@@ -10,6 +10,9 @@ import * as Linking from 'expo-linking'
 import Home from '../../../scenes/Home'
 import Detail from '../../../scenes/detail'
 import CheckRecipe from '../../../scenes/CheckRecipe'
+import External from '../../../scenes/External'
+import Allingredients from '../../../scenes/Allingredients'
+import Makeit from '../../../scenes/Makeit'
 
 const Stack = createStackNavigator()
 
@@ -23,16 +26,22 @@ export const HomeNavigator = () => {
   }
 
   const [title, setTitle] = useState('default title')
+
+
+
   return (
     <HomeTitleContext.Provider
+
       value={{
         title,
         setTitle,
       }}
+
     >
       <HomeTitleContext.Consumer>
         {(ctx) => (
           <Stack.Navigator screenOptions={navigationProps}
+
             options={{
 
             }}>
@@ -61,6 +70,44 @@ export const HomeNavigator = () => {
 
               options={{
                 headerTransparent: true,
+                headerTitle: '',
+                headerBackTitle: ""
+
+              }}
+
+            />
+            <Stack.Screen
+              name="SearchIngredient"
+              component={External}
+
+
+              options={{
+
+
+                headerTransparent: true,
+                headerTitle: '',
+                headerBackTitle: ""
+
+              }}
+
+            />
+            <Stack.Screen
+              name="SeeAllIngredients"
+              component={Allingredients}
+              options={{
+                headerTransparent: true,
+                headerTitle: '',
+                headerBackTitle: ""
+
+              }}
+
+            />
+            <Stack.Screen
+              name="MakeRecipe"
+              component={Makeit}
+              options={{
+             
+           
                 headerTitle: '',
                 headerBackTitle: ""
 

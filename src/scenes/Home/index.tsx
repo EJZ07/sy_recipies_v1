@@ -50,7 +50,8 @@ export default function Home() {
         // console.log("THE SNAPSHOT: ", querySnapshot)
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
+            console.log("DOC HOME: ", doc.data())
+        
             temp.push({id: doc.id, data: doc.data()})
             // setUserList([...userList, ...[doc.data()]])
         });

@@ -13,20 +13,18 @@ import RootStack from './rootstack/RootStack'
 export default function App() {
   const { scheme } = useContext(ColorSchemeContext)
   const { userData } = useContext(UserDataContext)
-
-  const prefix = Linking.createURL("/");
   const [title, setTitle] = useState('default title')
-
+  const prefix = Linking.createURL('/')
   const linking = {
     prefixes: [prefix],
     config: {
       screens: {
-        Home: "home",
-        Settings: "settings",
-      },
-    },
+        Home: "HomeStack",
+        Look: "Look",
+        Profile: "ProfileTab"
+      }
+    }
   };
-
 
   return (
     <>

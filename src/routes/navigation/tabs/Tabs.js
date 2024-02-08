@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import FontIcon from 'react-native-vector-icons/FontAwesome5'
 import { AntDesign } from '@expo/vector-icons';
 import { colors } from 'theme'
-
+import * as Linking from 'expo-linking'
 // stack navigators
 import { HomeNavigator, ProfileNavigator, ConnectNavigator } from '../stacks'
 import { ModalStacks } from '../stacks/ModalStacks/ModalStacks';
@@ -11,11 +11,23 @@ import Create from '../../../scenes/Create';
 import Mock from '../../../scenes/Mock';
 
 const Tab = createBottomTabNavigator()
+const prefix = Linking.createURL('/')
 
 const TabNavigator = () => {
+
+  const linking = {
+    prefixes: [prefix],
+    config: {
+      screens: {
+        Home: "HomeStack",
+        Look: "Look",
+        Profile: "ProfileTab"
+      }
+    }
+  };
   return (
     <Tab.Navigator
-     
+      linking={linking}
       defaultScreenOptions={{
         headerShown: false,
         headerTransparent: true
@@ -46,7 +58,7 @@ const TabNavigator = () => {
       />
       <Tab.Screen
         name="ConnectTab"
-       
+
         component={Mock}
         options={{
           tabBarShowLabel: false,

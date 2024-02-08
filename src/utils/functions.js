@@ -4,5 +4,9 @@ const getKilobyteSize = ({str}) => {
   return `${kilobytes}KB`;
 };
 
+const howLongAgo = ({date}) => {
+  
+}
+
 
 export { getKilobyteSize}

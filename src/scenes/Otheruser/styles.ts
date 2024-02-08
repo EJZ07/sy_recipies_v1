@@ -11,18 +11,34 @@ const styles = StyleSheet.create({
     },
     container: {
       flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
+      padding: 16,
+      
+      backgroundColor: colors.dark
     },
     title: {
-      fontSize: fontSize.xxxLarge,
-      marginBottom: 20,
-      textAlign: 'center'
+      fontSize: fontSize.large,
+      
+
+    },
+    title2: {
+      fontSize: fontSize.large, 
+      paddingTop: 40,
+      paddingBottom: 20
+
     },
     field: {
-      fontSize: fontSize.middle,
+      fontSize: fontSize.xxxLarge,
+      fontWeight: "700",
       textAlign: 'center',
+      paddingVertical: 10
     },
+    follow: {
+      fontSize: fontSize.medium,
+      fontWeight: "500",
+      textAlign: 'center',
+      paddingVertical: 10
+    },
+    
   })
   
 

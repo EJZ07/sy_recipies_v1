@@ -32,14 +32,6 @@ export default function RootStack() {
 
   const [data, setData] = useState(null)
 
-  const handleDeepLink = (event) => {
- 
-    let data = Linking.useURL()
-    setDeepLink(data)
-
-    console.log("Deep Link: ", data)
-  }
-
   useEffect(() => {
 
     (async () => {
@@ -69,21 +61,6 @@ export default function RootStack() {
     getLiked()
     getSaved()
   }, [userData])
-
-  useEffect(() => {
-    console.log("Handling deep link")
-    Linking.addEventListener(
-      'url',
-      handleDeepLink
-    )
-    return () => {
-      Linking.createURL(
-        'url'
-      )
-    }
-  }, []);
-
-  
 
   return (
     <Stack.Navigator
