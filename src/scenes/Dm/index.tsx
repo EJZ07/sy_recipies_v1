@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useRef } from "react"
-import { View, Text, StyleSheet, Image, useWindowDimensions, Alert, Pressable, RefreshControl, FlatList, Touchable, TextInput, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, Text, StyleSheet, Image, useWindowDimensions, Alert, Pressable, RefreshControl, FlatList, Touchable, TextInput, KeyboardAvoidingView, Platform, Keyboard } from 'react-native'
 import { firestore } from '../../firebase/config'
 import { doc, onSnapshot, setDoc, query, collection, getDocs, where, getDoc, orderBy } from 'firebase/firestore';
 import { Dispatch, useState, useContext } from "react";
@@ -28,7 +28,8 @@ const Dm = () => {
     const navigation = useNavigation()
     const deviceHeight = useWindowDimensions().height;
     const deviceWidth = useWindowDimensions().width;
-    const [text, setText] = useState('')
+    const [image, setImage] = useState('')
+    const [text, setText] = useState({})
     const [showCreate, setShowCreate] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
     const { userData } = useContext(UserDataContext)
@@ -54,26 +55,27 @@ const Dm = () => {
     }
 
     const handleSend = () => {
-
+        console.log("Text: ", text)
+        setDmList([...dmList, {sender: 1, message: text, image: image}])
+        setText('')
     }
 
+    useEffect(() => {
+        console.log("DM LIST: ", dmList)
+    }, [dmList])
 
 
     return (
-
-        <View 
-            style={{ flexDirection: "column", justifyContent: "flex-end", flex: 1 }}
-        >
-            <View style={{ justifyContent: "flex-start", padding: 8, paddingTop: 10, flexDirection: "row" }}>
-                <Feather name="chevron-left" size={35} color="white" onPress={() => { navigation.goBack() }} />
-                <Text style={[colorScheme.text, styles.title]}>text{data.fullName}</Text>
+        <View style={{ height: deviceHeight, flex: 1 }}>
+            <View style={{ justifyContent: "flex-start", padding: 8, paddingTop: 25, flexDirection: "row", alignItems: "center", gap: 10 }}>
+                <Feather name="chevron-left" size={30} color="white" onPress={() => { navigation.goBack() }} />
+                <Avatar size="small" source={{ uri: data.avatar }} rounded />
+                <Text style={[{ color: colorScheme.text }, styles.title]}>{data.fullName}</Text>
             </View>
 
 
-            <MaskedView
-                style={{ flex: 1, height: deviceHeight }}
-                maskElement={<LinearGradient style={{ flex: 1 }} colors={['white', 'transparent']} start={{ x: 0.5, y: .8 }} end={{ x: 0.5, y: 1 }} />}
-            >
+            <View style={{ flex: 1, paddingTop: 12 }}>
+
                 <FlatList
 
                     ref={ref}
@@ -83,21 +85,29 @@ const Dm = () => {
                     style={[, styles.main,]}
                     data={dmList}
                     keyExtractor={(item) => item?.id + (Math.random() * 9999)}
-                    renderItem={({ index, item }) => <Text style={styles.message}></Text>}
+                    renderItem={({ index, item }) => <View style={[styles.container, { width: deviceWidth / 2.2, alignSelf: "flex-end" }]}><Text style={styles.message}>{item.message}</Text></View>}
                     showsVerticalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
 
                 />
-            </MaskedView>
-       
+            </View>
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'position' : 'height'}
+                style={{ flexDirection: "column", justifyContent: "flex-end", flex: 1 }}
+                onAccessibilityEscape={() => Keyboard.dismiss()}
+                keyboardVerticalOffset={50}
+            >
 
-                <View style={{ flexDirection: "row", gap: 10, backgroundColor: colors.dark, padding: 12, paddingBottom: 25}}>
+
+
+
+
+                <View style={{ flexDirection: "row", gap: 10, backgroundColor: colors.dark, padding: 12, paddingBottom: 25 }}>
                     <View style={{ borderWidth: 1, borderColor: colorScheme.text, borderRadius: 25, flex: 1 }}>
                         <TextInput
                             ref={inputRef}
-
+                            multiline
                             placeholder={'Type a message'}
                             placeholderTextColor={colors.gray}
                             editable
@@ -105,15 +115,16 @@ const Dm = () => {
                             maxLength={20}
                             onChangeText={setText}
                             value={text}
-                            style={{ padding: 15, color: colorScheme.text, fontSize: 16, }}
+                            style={{ padding: 15, color: colorScheme.text, fontSize: 16, paddingTop: 15 }}
                         />
                     </View>
                     <Pressable style={styles.share} onPress={handleSend}>
                         <FontAwesome name="send" size={16} color="black" />
                     </Pressable>
                 </View>
-         
 
+
+            </KeyboardAvoidingView>
         </View>
     )
 
@@ -132,24 +143,36 @@ const styles = StyleSheet.create({
     },
     share: {
         backgroundColor: colors.lightGrayPurple,
-        paddingHorizontal: 17,
-        paddingVertical: 0,
+        height: 40,
+        width: 40,
         borderRadius: 90,
-        justifyContent: "center"
+        justifyContent: "center",
+        alignItems: "center"
     },
     main: {
         flex: 1,
 
 
     },
+    container: {
+        backgroundColor: colors.blueLight,
+        borderBottomRightRadius: 12,
+        borderBottomLeftRadius: 12,
+        borderTopLeftRadius: 12,
+        padding: 12,
+        marginVertical: 12
+    },
     message: {
         fontSize: fontSize.medium,
         color: colors.white,
+        fontWeight: "500"
+
     },
     card: {
 
     },
     title: {
+
         fontWeight: "600",
         fontSize: fontSize.large,
 
