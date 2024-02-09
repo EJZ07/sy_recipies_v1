@@ -15,9 +15,8 @@ import TimeAgo from 'react-native-timeago';
 import { UserDataContext } from "../../context/UserDataContext";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { LinearGradient } from "expo-linear-gradient";
-import MaskedView from '@react-native-masked-view/masked-view';
-import ScreenTemplate from "../../components/ScreenTemplate";
 import { useRoute } from "@react-navigation/native";
+import { sendMessage } from "../../utils/firebaseFunctions";
 
 
 const Dm = () => {
@@ -29,7 +28,8 @@ const Dm = () => {
     const deviceHeight = useWindowDimensions().height;
     const deviceWidth = useWindowDimensions().width;
     const [image, setImage] = useState('')
-    const [text, setText] = useState({})
+    const [text, setText] = useState('')
+    const [conversation, setConversation] = useState('')
     const [showCreate, setShowCreate] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
     const { userData } = useContext(UserDataContext)
@@ -54,15 +54,55 @@ const Dm = () => {
 
     }
 
-    const handleSend = () => {
+    const handleSend = (data) => {
         console.log("Text: ", text)
-        setDmList([...dmList, {sender: 1, message: text, image: image}])
+        const newData = { sender: userData.id, sendTo: data.id, message: text, image: image, createdAt: new Date() }
+        sendMessage({ userData, newData, conversation, data }).then((res) => {
+            setConversation(res)
+        })
+        
+        setDmList([...dmList, newData])
         setText('')
     }
 
     useEffect(() => {
         console.log("DM LIST: ", dmList)
+        console.log("The data from this DM: ", data)
     }, [dmList])
+
+    const checkTime = ({ current, index }) => {
+        if (index != 0) {
+            let diffMs = dmList[index - 1]?.createdAt - current
+            let diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000);
+            if (diffMins > 30) return 1
+            else return 0
+        } else {
+            return 1
+        }
+    }
+
+    const checkTime2 = ({ current }) => {
+        let currentDate = new Date()
+        let diffMs = (currentDate - current)
+        var diffHrs = Math.floor((diffMs % 86400000) / 3600000);
+        if (diffHrs > 24) return current.toDateString()
+        else return current.toLocaleTimeString()
+    }
+
+    const Message = ({ item, index }) => {
+        return (
+            <View >
+                {checkTime({ current: item?.createdAt, index: index }) ?
+                    <Text style={{ color: colors.gray, textAlign: "center", paddingBottom: 16 }}>{checkTime2({ current: item?.createdAt })}</Text> :
+                    ""}
+                <TouchableOpacity activeOpacity={0} >
+                    <View style={[styles.container, { alignSelf: "flex-end", maxWidth: deviceWidth / 1.1 }]}>
+                        <Text selectable={true} style={styles.message}>{item.message}</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+        )
+    }
 
 
     return (
@@ -84,8 +124,8 @@ const Dm = () => {
                     scrollEnabled={true}
                     style={[, styles.main,]}
                     data={dmList}
-                    keyExtractor={(item) => item?.id + (Math.random() * 9999)}
-                    renderItem={({ index, item }) => <View style={[styles.container, { width: deviceWidth / 2.2, alignSelf: "flex-end" }]}><Text style={styles.message}>{item.message}</Text></View>}
+                    keyExtractor={(item) => item?.createdAt?.toString()}
+                    renderItem={({ index, item }) => <Message key={index} item={item} index={index} />}
                     showsVerticalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -111,14 +151,14 @@ const Dm = () => {
                             placeholder={'Type a message'}
                             placeholderTextColor={colors.gray}
                             editable
-                            numberOfLines={1}
-                            maxLength={20}
+
+                            maxLength={220}
                             onChangeText={setText}
                             value={text}
                             style={{ padding: 15, color: colorScheme.text, fontSize: 16, paddingTop: 15 }}
                         />
                     </View>
-                    <Pressable style={styles.share} onPress={handleSend}>
+                    <Pressable style={styles.share} onPress={() => handleSend(data)}>
                         <FontAwesome name="send" size={16} color="black" />
                     </Pressable>
                 </View>
@@ -156,16 +196,18 @@ const styles = StyleSheet.create({
     },
     container: {
         backgroundColor: colors.blueLight,
-        borderBottomRightRadius: 12,
-        borderBottomLeftRadius: 12,
-        borderTopLeftRadius: 12,
+        borderBottomRightRadius: 16,
+        borderBottomLeftRadius: 16,
+        borderTopLeftRadius: 16,
         padding: 12,
-        marginVertical: 12
+        paddingHorizontal: 15,
+        marginVertical: 3
     },
     message: {
-        fontSize: fontSize.medium,
+        fontSize: fontSize.large,
         color: colors.white,
-        fontWeight: "500"
+        fontWeight: "400",
+        textAlign: "left"
 
     },
     card: {

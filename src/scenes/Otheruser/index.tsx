@@ -170,7 +170,7 @@ export default function Otheruser() {
           </View>
 
           <Text style={[styles.title2, { color: colorScheme.text }]}>Created</Text>
-          <View style={{}}>
+          <View style={{marginBottom: 80}}>
             {
 
               posts.map((post) => (
