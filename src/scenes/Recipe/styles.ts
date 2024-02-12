@@ -10,16 +10,18 @@ const styles = StyleSheet.create({
       backgroundColor: colors.black
     },
     container: {
-      
+      flex: 1,
       alignItems: 'flex-start',
       justifyContent: 'center',
-      marginTop: 10,
+   
+      marginTop: 25,
       paddingHorizontal: 8,
     },
     title: {
       fontSize: fontSize.xxxLarge,
-      marginBottom: 20,
-      textAlign: 'center'
+      marginBottom: 15,
+  
+      
     },
     field: {
       fontSize: fontSize.middle,

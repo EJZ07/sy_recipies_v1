@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
   },
   main: {
     flex: 1,
-    width: '100%',
+    marginTop: 10,
+   
   },
   title: {
     fontSize: fontSize.middle,

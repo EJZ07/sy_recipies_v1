@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "reactnative-expo-firebase-boilerplate-v2",
+    "scheme": "recipes",
     "slug": "reactnative-expo-firebase-boilerplate-v2",
     "privacy": "public",
     "platforms": [
