@@ -17,19 +17,20 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRoute } from "@react-navigation/native";
 import { sendMessage } from "../../utils/firebaseFunctions";
+import { useViewRefSet } from "react-native-reanimated/lib/typescript/reanimated2/ViewDescriptorsSet";
 
 
 const Dm = () => {
     const ref = React.useRef<FlatList>(null)
     const route = useRoute()
-    const { data, from } = route.params
+    const { data, from, conversationId } = route.params
     const inputRef = useRef(null);
     const navigation = useNavigation()
     const deviceHeight = useWindowDimensions().height;
     const deviceWidth = useWindowDimensions().width;
     const [image, setImage] = useState('')
     const [text, setText] = useState('')
-    const [conversation, setConversation] = useState('')
+    const [conversation, setConversation] = useState(conversationId)
     const [showCreate, setShowCreate] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
     const { userData } = useContext(UserDataContext)
@@ -50,18 +51,33 @@ const Dm = () => {
         }, 2000);
     }, []);
 
-    const getMessages = () => {
+    const getMessages = async () => {
+        console.log("CONVERSATION: ", conversation)
+        const usersRef = await collection(firestore, 'messages', conversation, "text")
+        const q = query(usersRef, orderBy("createdAt"));
+        let temp = []
+        const querySnapshot = await getDocs(q);
 
+        // console.log("THE SNAPSHOT: ", querySnapshot)
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            console.log("DOC HOME: ", doc.data())
+
+            temp.push(doc.data())
+            // setUserList([...userList, ...[doc.data()]])
+        });
+
+        setDmList(temp)
     }
 
     const handleSend = (data) => {
         console.log("Text: ", text)
-        const newData = { sender: userData.id, sendTo: data.id, message: text, image: image, createdAt: new Date() }
+        const newData = { sender: userData.id, sendTo: data.id, message: text, image: image, createdAt: new Date()}
         sendMessage({ userData, newData, conversation, data }).then((res) => {
             setConversation(res)
         })
-        
-        setDmList([...dmList, newData])
+
+        setDmList([...dmList, { sender: userData.id, sendTo: data.id, message: text, image: image, createdAt: new Date(), isNew: 1}])
         setText('')
     }
 
@@ -69,6 +85,11 @@ const Dm = () => {
         console.log("DM LIST: ", dmList)
         console.log("The data from this DM: ", data)
     }, [dmList])
+
+    useEffect(() => {
+        getMessages()
+        console.log("User Data: ", userData.id)
+    }, [])
 
     const checkTime = ({ current, index }) => {
         if (index != 0) {
@@ -90,16 +111,31 @@ const Dm = () => {
     }
 
     const Message = ({ item, index }) => {
+        console.log("Type: ", typeof(item?.createdAt))
+        let theDate
+        
+        if(item.hasOwnProperty("isNew")) {
+            theDate = item?.createdAt
+        }else{
+            theDate = item?.createdAt.toDate()
+        }
         return (
             <View >
-                {checkTime({ current: item?.createdAt, index: index }) ?
-                    <Text style={{ color: colors.gray, textAlign: "center", paddingBottom: 16 }}>{checkTime2({ current: item?.createdAt })}</Text> :
+                {checkTime({ current: theDate, index: index }) ?
+                    <Text style={{ color: colors.gray, textAlign: "center", paddingBottom: 16 }}>{checkTime2({ current: theDate })}</Text> :
                     ""}
-                <TouchableOpacity activeOpacity={0} >
-                    <View style={[styles.container, { alignSelf: "flex-end", maxWidth: deviceWidth / 1.1 }]}>
-                        <Text selectable={true} style={styles.message}>{item.message}</Text>
-                    </View>
-                </TouchableOpacity>
+                {
+                    item.sender == userData.id ? <TouchableOpacity activeOpacity={0} >
+                        <View style={[styles.container, { alignSelf: 'flex-end' }, { maxWidth: deviceWidth / 1.1 }]}>
+                            <Text selectable={true} style={styles.message}>{item.message}</Text>
+                        </View>
+                    </TouchableOpacity> : <TouchableOpacity activeOpacity={0} >
+                        <View style={[styles.sContainer, { alignSelf: 'flex-start' }, { maxWidth: deviceWidth / 1.1 }]}>
+                            <Text selectable={true} style={styles.message}>{item.message}</Text>
+                        </View>
+                    </TouchableOpacity>
+                }
+
             </View>
         )
     }
@@ -134,8 +170,9 @@ const Dm = () => {
                 />
             </View>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'position' : 'height'}
-                style={{ flexDirection: "column", justifyContent: "flex-end", flex: 1 }}
+                style={{ justifyContent: "flex-end",  }}
                 onAccessibilityEscape={() => Keyboard.dismiss()}
+                
                 keyboardVerticalOffset={50}
             >
 
@@ -199,6 +236,15 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 16,
         borderBottomLeftRadius: 16,
         borderTopLeftRadius: 16,
+        padding: 12,
+        paddingHorizontal: 15,
+        marginVertical: 3
+    },
+    sContainer: {
+        backgroundColor: colors.gray,
+        borderBottomRightRadius: 16,
+        borderTopRightRadius: 16,
+        borderBottomLeftRadius: 16,
         padding: 12,
         paddingHorizontal: 15,
         marginVertical: 3

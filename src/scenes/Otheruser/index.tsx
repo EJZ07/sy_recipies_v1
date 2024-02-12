@@ -26,6 +26,7 @@ export default function Otheruser() {
   const [followings, setFollowings] = useState([])
   const [posts, setPosts] = useState([])
   const [hasBeenFollowed, setHasBeenFollowed] = useState(false)
+  const [cId, setCid] = useState('')
   const { setTitle } = useContext(HomeTitleContext)
   const date = data?.createdAt?.toDate()
   const navigation = useNavigation()
@@ -83,6 +84,29 @@ export default function Otheruser() {
 
   }
 
+  const getMessages = async () => {
+    console.log("getposts")
+    try {
+      const usersRef = await collection(firestore, 'users', data.id, 'messages', userData.id, "text")
+      const q = query(usersRef, orderBy("createdAt", "desc"));
+      let temp = []
+      const querySnapshot = await getDocs(q);
+
+      // console.log("THE SNAPSHOT: ", querySnapshot)
+      querySnapshot.forEach((doc) => {
+        setCid(doc.data().conversationId)
+        // setComments([...comments, ...[doc.data()]])
+      });
+
+    
+
+
+    } catch (e) {
+      console.log("Error getting current user : ", e)
+    }
+
+  }
+
   useEffect(() => {
     console.log("Get Date: ", date)
     console.log('FOLLOW LIST: ', followList)
@@ -92,6 +116,7 @@ export default function Otheruser() {
 
     getFollowings()
     getPosts()
+    getMessages()
 
   }, [])
 
@@ -163,6 +188,7 @@ export default function Otheruser() {
               onPress={() => navigation.navigate(
                 'DirectMessage',
                 {
+                  conversationId: cId,
                   data: data,
                   from: 'Other-User'
                 })}

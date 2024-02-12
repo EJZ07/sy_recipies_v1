@@ -190,37 +190,27 @@ const unfollow = async ({ userData, data }) => {
 
 const sendMessage = async ({ userData, newData, conversation, data }) => {
     try {
-        // const checkUserRef = await doc(firestore, "users", userData.id, 'messages', data.id)
-        // const q = query(checkUserRef);
-        // const querySnapshot = await getDocs(q);
-        // querySnapshot.forEach((doc) => {
-        //     console.log("Current User: ", doc.data())
-        //     if(doc.id == data.id) {
-
-        //     }
-        //     // setUserList([...userList, ...[doc.data()]])
-        //   });
-       
+ 
         if(conversation.length > 2){
             const messageRef = await doc(collection(firestore, 'messages', conversation, 'text'))
             await setDoc(messageRef, newData)
 
-            const uMessageRef = await doc(collection(firestore, 'users', userData.id, 'messages', conversation, 'text'))
-            await setDoc(uMessageRef, newData)
+            const uMessageRef = await doc(collection(firestore, 'users', userData.id, 'messages', data.id, 'text'))
+            await setDoc(uMessageRef, {...newData, ...{conversationId: conversation}})
 
-            const oMessageRef = await doc(collection(firestore, 'users', data.id, 'messages', conversation, 'text'))
-            await setDoc(oMessageRef, newData)
+            const oMessageRef = await doc(collection(firestore, 'users', data.id, 'messages', userData.id, 'text'))
+            await setDoc(oMessageRef, {...newData, ...{conversationId: conversation}})
 
             return conversation
         }else{
             const messageRef = await doc(collection(firestore, 'messages'))
             await setDoc(doc(collection(messageRef, "text")), newData)
 
-            const uMessageRef = await doc(collection(firestore, 'users', userData.id, 'messages', messageRef.id, 'text'))
-            await setDoc(uMessageRef, newData)
+            const uMessageRef = await doc(collection(firestore, 'users', userData.id, 'messages', data.id, 'text'))
+            await setDoc(uMessageRef, {...newData, ...{conversationId: messageRef.id}})
 
-            const oMessageRef = await doc(collection(firestore, 'users', data.id, 'messages', messageRef.id, 'text'))
-            await setDoc(oMessageRef, newData)
+            const oMessageRef = await doc(collection(firestore, 'users', data.id, 'messages', userData.id, 'text'))
+            await setDoc(oMessageRef, {...newData, ...{conversationId: messageRef.id}})
 
             return messageRef.id
         }
