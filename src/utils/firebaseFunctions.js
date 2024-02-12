@@ -21,17 +21,17 @@ const follow = async ({ userData, data }) => {
         } catch (e) {
             console.log("Error adding data: ", e)
         }
-        try{
+        try {
             const followRef = await doc(firestore, 'users', data.id)
             const docSnap = await getDoc(followRef)
             console.log("DOC SNAP: ", docSnap.data())
-            if(docSnap.data().followers){
+            if (docSnap.data().followers) {
                 setDoc(followRef, { followers: docSnap.data().followers + 1 }, { merge: true })
-            }else{
+            } else {
                 setDoc(followRef, { followers: 1 }, { merge: true })
             }
-        }catch(e){
-            console.log("Incrementing Follower Count Error: ", e )
+        } catch (e) {
+            console.log("Incrementing Follower Count Error: ", e)
         }
 
         try {
@@ -48,7 +48,7 @@ const follow = async ({ userData, data }) => {
         } catch (e) {
             console.log("Error adding data: ", e)
         }
-       
+
     }
 
 }
@@ -105,13 +105,13 @@ const like = async ({ userData, data, id }) => {
         const likeRef = await doc(firestore, 'posts', id)
         const docSnap = await getDoc(likeRef)
         console.log("DOC SNAP: ", docSnap.data())
-        if(docSnap.data().likeCount){
+        if (docSnap.data().likeCount) {
             setDoc(likeRef, { likeCount: docSnap.data().likeCount + 1 }, { merge: true })
-        }else{
+        } else {
             setDoc(likeRef, { likeCount: 1 }, { merge: true })
         }
-        
-       
+
+
 
 
     } catch (e) {
@@ -130,10 +130,10 @@ const unLike = async ({ userData, data, id }) => {
         const docSnap = await getDoc(likeRef)
         console.log("DOC SNAP: ", docSnap.data())
 
-        if(docSnap.data().likeCount){
-            setDoc(likeRef, { likeCount: docSnap.data().likeCount - 1  }, { merge: true })
-        }else{
-            setDoc(likeRef, { likeCount: 0}, { merge: true })
+        if (docSnap.data().likeCount) {
+            setDoc(likeRef, { likeCount: docSnap.data().likeCount - 1 }, { merge: true })
+        } else {
+            setDoc(likeRef, { likeCount: 0 }, { merge: true })
         }
 
 
@@ -163,17 +163,17 @@ const unfollow = async ({ userData, data }) => {
         console.log("Error adding data: ", e)
     }
 
-    try{
+    try {
         const followRef = await doc(firestore, 'users', data.id)
         const docSnap = await getDoc(followRef)
         console.log("DOC SNAP: ", docSnap.data())
-        if(docSnap.data().followers){
+        if (docSnap.data().followers) {
             setDoc(followRef, { followers: docSnap.data().followers - 1 }, { merge: true })
-        }else{
+        } else {
             setDoc(followRef, { followers: 1 }, { merge: true })
         }
-    }catch(e){
-        console.log("Decrementing Follower Count Error: ", e )
+    } catch (e) {
+        console.log("Decrementing Follower Count Error: ", e)
     }
 
     try {
@@ -184,6 +184,40 @@ const unfollow = async ({ userData, data }) => {
         console.log("User Followed was saved")
     } catch (e) {
         console.log("Error deleting data: ", e)
+    }
+
+}
+
+const sendMessage = async ({ userData, newData, conversation, data }) => {
+    try {
+ 
+        if(conversation.length > 2){
+            const messageRef = await doc(collection(firestore, 'messages', conversation, 'text'))
+            await setDoc(messageRef, newData)
+
+            const uMessageRef = await doc(collection(firestore, 'users', userData.id, 'messages', data.id, 'text'))
+            await setDoc(uMessageRef, {...newData, ...{conversationId: conversation}})
+
+            const oMessageRef = await doc(collection(firestore, 'users', data.id, 'messages', userData.id, 'text'))
+            await setDoc(oMessageRef, {...newData, ...{conversationId: conversation}})
+
+            return conversation
+        }else{
+            const messageRef = await doc(collection(firestore, 'messages'))
+            await setDoc(doc(collection(messageRef, "text")), newData)
+
+            const uMessageRef = await doc(collection(firestore, 'users', userData.id, 'messages', data.id, 'text'))
+            await setDoc(uMessageRef, {...newData, ...{conversationId: messageRef.id}})
+
+            const oMessageRef = await doc(collection(firestore, 'users', data.id, 'messages', userData.id, 'text'))
+            await setDoc(oMessageRef, {...newData, ...{conversationId: messageRef.id}})
+
+            return messageRef.id
+        }
+        
+     
+    } catch (e) {
+        console.log("Error when adding Message: ", e)
     }
 
 }
@@ -213,4 +247,4 @@ const getUser = async ({ data }) => {
     }
 }
 
-export { follow, unfollow, addPost, getUser, save, unsave, like, unLike }
+export { follow, unfollow, addPost, getUser, save, unsave, like, unLike, sendMessage }

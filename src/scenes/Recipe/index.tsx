@@ -6,12 +6,12 @@ import { useRoute, useFocusEffect, useNavigation, StackActions } from '@react-na
 import { colors, fontSize } from '../../theme'
 import { ColorSchemeContext } from '../../context/ColorSchemeContext'
 import { HomeTitleContext } from '../../context/HomeTitleContext'
-import { storage } from '../../utils/Storage'
 import { UserDataContext } from '../../context/UserDataContext'
 import { FlagContext } from '../../context/FlagContext'
 import { AntDesign } from '@expo/vector-icons';
+import * as ImageManipulator from 'expo-image-manipulator'
 import { Entypo } from '@expo/vector-icons';
-import { firestore, } from '../../firebase/config';
+import { firestore, storage } from '../../firebase/config';
 import { doc, onSnapshot, collection, query, getDocs, setDoc, deleteDoc } from 'firebase/firestore';
 import { addPost, follow, unfollow } from '../../utils/firebaseFunctions'
 import { Feather } from '@expo/vector-icons';
@@ -22,6 +22,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { showToast } from '../../utils/ShowToast'
 import { Skeleton } from '@rneui/base'
+import { ref, uploadBytesResumable, getDownloadURL, } from "firebase/storage";
 
 type ModalProps = {
   isVisible?: boolean;
@@ -40,6 +41,7 @@ export default function Recipe() {
   const inputRef = useRef(null);
   const [date, setDate] = useState('')
   const [text, setText] = useState('')
+  const [progress, setProgress] = useState('')
   const [steps, setSteps] = useState(selection.steps)
   const [isVisible, setIsVisible] = useState(true)
   const navigation = useNavigation()
@@ -61,7 +63,7 @@ export default function Recipe() {
 
 
 
-  const handlePost = () => {
+  const handlePost = async () => {
     console.log("Post Selection: ", selection)
     const data = {
       id: userData.id,
@@ -82,6 +84,8 @@ export default function Recipe() {
       body: 'Recipe Posted',
       isDark
     })
+
+
     setSelection({})
     navigation.navigate("Home")
   }
@@ -122,6 +126,37 @@ export default function Recipe() {
       let newArr = [...steps]
       newArr[index].image = result.assets[0].uri
       setSteps(newArr)
+      let actions = [];
+      actions.push({ resize: { width: 300 } });
+      const manipulatorResult = await ImageManipulator.manipulateAsync(
+        result.assets[0].uri,
+        actions,
+        {
+          compress: 0.4,
+        },
+      );
+      const localUri = await fetch(manipulatorResult.uri);
+      const localBlob = await localUri.blob();
+      const filename = userData.id + new Date().getTime()
+      const storageRef = ref(storage, `comments/${userData.id}/` + filename)
+      const uploadTask = uploadBytesResumable(storageRef, localBlob)
+      uploadTask.on('state_changed',
+        (snapshot) => {
+          let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setProgress(parseInt(progress) + '%')
+        },
+        (error) => {
+          console.log(error);
+          alert("Upload failed.");
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setProgress('')
+          
+
+          });
+        }
+      );
 
     }
   }
@@ -148,7 +183,7 @@ export default function Recipe() {
                     {
                       item?.image ?
                         <View style={{ padding: 12 }}>
-                          <TouchableOpacity onLongPress={() => handleImageChange(index)} acti>
+                          <TouchableOpacity onLongPress={() => handleImageChange(index)} >
                             <Image source={{ uri: item.image }} style={{
                               width: 100,
                               height: 100,
