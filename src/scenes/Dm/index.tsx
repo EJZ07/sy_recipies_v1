@@ -160,6 +160,7 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 12,
         borderTopLeftRadius: 12,
         padding: 12,
+        paddingVertical: 16,
         marginVertical: 12
     },
     message: {
