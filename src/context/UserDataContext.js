@@ -17,7 +17,7 @@ export const UserDataContextProvider = (props) => {
   }, [])
 
   useEffect(() => {
-    // getFollowers()
+    getFollowers()
     getSaved()
    
   }, [])

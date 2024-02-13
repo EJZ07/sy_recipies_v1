@@ -2,19 +2,19 @@ import React, { useState, useContext } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 import { colors, fontSize } from '../../../theme'
 import { createStackNavigator } from '@react-navigation/stack'
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { HomeTitleContext } from '../../../context/HomeTitleContext'
 import { ColorSchemeContext } from '../../../context/ColorSchemeContext'
 import { lightProps, darkProps } from './navigationProps/navigationProps'
 import * as Linking from 'expo-linking'
 
 import Home from '../../../scenes/Home'
+import FollowerFeed from '../../../scenes/FollowerFeed'
 import Detail from '../../../scenes/detail'
 import CheckRecipe from '../../../scenes/CheckRecipe'
 import External from '../../../scenes/External'
 import Allingredients from '../../../scenes/Allingredients'
 import Makeit from '../../../scenes/Makeit'
-import { NavigationContainer } from '@react-navigation/native'
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 
 const Stack = createStackNavigator()
 const TopTab = createMaterialTopTabNavigator()
@@ -37,7 +37,7 @@ const TopNav = () => {
         tabBarInactiveTintColor: "#FFFFFF"
       }}
     >
-      <TopTab.Screen name="Following" component={Home} />
+      <TopTab.Screen name="Following" component={FollowerFeed} />
       <TopTab.Screen name="For You" component={Home} />
     </TopTab.Navigator>
   )
@@ -73,7 +73,7 @@ export const HomeNavigator = () => {
 
             }}>
             <Stack.Screen
-              name="HomeStack"
+              name="Home"
               component={TopNav}
             />
             <Stack.Screen
