@@ -13,8 +13,35 @@ import CheckRecipe from '../../../scenes/CheckRecipe'
 import External from '../../../scenes/External'
 import Allingredients from '../../../scenes/Allingredients'
 import Makeit from '../../../scenes/Makeit'
+import { NavigationContainer } from '@react-navigation/native'
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 
 const Stack = createStackNavigator()
+const TopTab = createMaterialTopTabNavigator()
+
+const TopNav = () => {
+  return (
+    <TopTab.Navigator
+      initialRouteName="For You"
+      screenOptions={{
+        tabBarLabelStyle: {
+          color: "#FFFFFF"
+        },
+        tabBarStyle: {
+          backgroundColor: "#00000000"
+        },
+        tabBarIndicatorStyle: {
+          backgroundColor: "#FFFFFF"
+        },
+        tabBarActiveTintColor: "#FFFFFF",
+        tabBarInactiveTintColor: "#FFFFFF"
+      }}
+    >
+      <TopTab.Screen name="Following" component={Home} />
+      <TopTab.Screen name="For You" component={Home} />
+    </TopTab.Navigator>
+  )
+}
 
 export const HomeNavigator = () => {
   const { scheme } = useContext(ColorSchemeContext)
@@ -47,21 +74,7 @@ export const HomeNavigator = () => {
             }}>
             <Stack.Screen
               name="HomeStack"
-              component={Home}
-
-              options={() => ({
-
-
-                header: () => (
-                  <View style={{ alignItems: "center", paddingBottom: 5 }}>
-                    <Text style={{ color: "white", textAlign: "center", fontSize: fontSize.large, paddingTop: 50, fontWeight: '500' }}>All</Text>
-                    <View style={{ flex: 1, height: 1, backgroundColor: 'white', borderTopColor: "white", width: 25, paddingTop: 1.5, borderRadius: 12 }} />
-                  </View>
-
-                )
-
-                // headerBackground: () => (<HeaderStyle />),
-              })}
+              component={TopNav}
             />
             <Stack.Screen
               name="Look"
@@ -106,8 +119,8 @@ export const HomeNavigator = () => {
               name="MakeRecipe"
               component={Makeit}
               options={{
-             
-           
+            
+          
                 headerTitle: '',
                 headerBackTitle: ""
 
