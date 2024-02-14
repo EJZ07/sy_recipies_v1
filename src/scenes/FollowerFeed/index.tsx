@@ -17,8 +17,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Entypo } from '@expo/vector-icons';
 
 import styles from './styles'
-import { follow } from '../../utils/firebaseFunctions'
-export default function FollowerFeed() {
+export default function Home() {
     const navigation = useNavigation()
     const deviceHeight = useWindowDimensions().height;
     const deviceWidth = useWindowDimensions().width;
@@ -42,15 +41,16 @@ export default function FollowerFeed() {
         }, 2000);
     }, []);
 
-    const getPosts = async () => {
+    const getPosts = useCallback(async () => {
+        console.log("runing")
 
         const usersRef = await collection(firestore, 'posts')
         const q = query(usersRef, orderBy("createdAt", "desc"));
         let temp = []
         const querySnapshot = await getDocs(q);
 
+        // console.log("THE SNAPSHOT: ", querySnapshot)
         querySnapshot.forEach((doc) => {
-
             const data = doc.data()
 
 
@@ -64,16 +64,14 @@ export default function FollowerFeed() {
             if(isUserFollowed) {
                 temp.push({ id: doc.id, data })
             }
-
         });
 
         setPostList(temp)
-    }
+    }, [followList])
 
     useEffect(() => {
         getPosts();
-
-    }, [rerender, refreshing])
+    }, [getPosts])
 
     const onNotificationPress = async () => {
         const res = await sendNotification({
