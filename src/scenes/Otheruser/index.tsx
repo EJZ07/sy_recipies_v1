@@ -10,7 +10,7 @@ import { storage } from '../../utils/Storage'
 import { UserDataContext } from '../../context/UserDataContext'
 import { AntDesign } from '@expo/vector-icons';
 import { firestore, } from '../../firebase/config';
-import { doc, onSnapshot, collection, query, getDocs, setDoc, deleteDoc, orderBy } from 'firebase/firestore';
+import { doc, onSnapshot, collection, query, getDocs, setDoc, deleteDoc, orderBy, limit } from 'firebase/firestore';
 import { Entypo } from '@expo/vector-icons';
 import { follow, unfollow } from '../../utils/firebaseFunctions'
 import moment from 'moment'
@@ -88,16 +88,17 @@ export default function Otheruser() {
     console.log("getposts")
     try {
       const usersRef = await collection(firestore, 'users', data.id, 'messages', userData.id, "text")
-      const q = query(usersRef, orderBy("createdAt", "desc"));
-      let temp = []
+      const q = query(usersRef, orderBy("createdAt", "desc"), limit(1));
       const querySnapshot = await getDocs(q);
-
-      // console.log("THE SNAPSHOT: ", querySnapshot)
+      let temp = []
+      console.log("THE SNAPSHOT: ", querySnapshot)
       querySnapshot.forEach((doc) => {
+        console.log("converationId for user: ", doc.data())
         setCid(doc.data().conversationId)
+        // setCid(doc.data().conversationId)
         // setComments([...comments, ...[doc.data()]])
       });
-
+      // setCid(temp)
     
 
 

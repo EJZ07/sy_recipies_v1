@@ -6,9 +6,11 @@ import { colors } from 'theme'
 import * as Linking from 'expo-linking'
 // stack navigators
 import { HomeNavigator, ProfileNavigator, ConnectNavigator } from '../stacks'
+import { LessonsNavigator } from '../stacks/LessonsNavigator';
 import { ModalStacks } from '../stacks/ModalStacks/ModalStacks';
 import Create from '../../../scenes/Create';
 import Mock from '../../../scenes/Mock';
+import Lessons from '../../../scenes/Lessons';
 
 const Tab = createBottomTabNavigator()
 const prefix = Linking.createURL('/')
@@ -55,6 +57,18 @@ const TabNavigator = () => {
             />
           ),
         }}
+      />
+      <Tab.Screen
+        name="StreamTab"
+
+        component={LessonsNavigator}
+        options={{
+          tabBarShowLabel: false,
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="videocamera" size={24} color={color} />
+          ),
+        }}
+       
       />
       <Tab.Screen
         name="ConnectTab"

@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { Text, View, StyleSheet, ScrollView } from 'react-native'
+import { Text, View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import { Avatar } from '@rneui/themed';
 import Dialog from "react-native-dialog"
 import Spinner from 'react-native-loading-spinner-overlay'
@@ -98,16 +98,10 @@ export default function Profile() {
           onPress={goDetail}
         />
         <Button
-          label='Open Modal'
+          label='Go Live'
           color={colors.tertiary}
           onPress={() => {
-            navigation.navigate('ModalStacks', {
-              screen: 'Post',
-              params: {
-                data: userData,
-                from: 'Profile screen'
-              }
-            })
+            navigation.navigate("LiveStream", {streamer: true})
           }}
         />
         <Button

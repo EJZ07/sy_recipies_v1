@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useRef } from "react"
 import { View, Text, StyleSheet, Image, useWindowDimensions, Alert, Pressable, RefreshControl, FlatList, Touchable, TextInput, KeyboardAvoidingView, Platform, Keyboard } from 'react-native'
 import { firestore } from '../../firebase/config'
-import { doc, onSnapshot, setDoc, query, collection, getDocs, where, getDoc, orderBy } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc, query, collection, getDocs, where, getDoc, orderBy, serverTimestamp } from 'firebase/firestore';
 import { Dispatch, useState, useContext } from "react";
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { SetStateAction } from "react";
@@ -55,19 +55,30 @@ const Dm = () => {
         console.log("CONVERSATION: ", conversation)
         const usersRef = await collection(firestore, 'messages', conversation, "text")
         const q = query(usersRef, orderBy("createdAt"));
-        let temp = []
-        const querySnapshot = await getDocs(q);
+        
 
-        // console.log("THE SNAPSHOT: ", querySnapshot)
-        querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            console.log("DOC HOME: ", doc.data())
+        const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
+            const temp = []
+            QuerySnapshot.forEach((doc) => {
+                temp.push(doc.data())
+            })
 
-            temp.push(doc.data())
-            // setUserList([...userList, ...[doc.data()]])
-        });
+            setDmList(temp)
+        })
 
-        setDmList(temp)
+        return () => unsubscribe;
+        // const querySnapshot = await getDocs(q);
+
+        // // console.log("THE SNAPSHOT: ", querySnapshot)
+        // querySnapshot.forEach((doc) => {
+        //     // doc.data() is never undefined for query doc snapshots
+        //     console.log("DOC HOME: ", doc.data())
+
+        //     temp.push(doc.data())
+        //     // setUserList([...userList, ...[doc.data()]])
+        // });
+
+    
     }
 
     const handleSend = (data) => {
@@ -237,10 +248,6 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 16,
         borderTopLeftRadius: 16,
         padding: 12,
-<<<<<<< HEAD
-        paddingVertical: 16,
-        marginVertical: 12
-=======
         paddingHorizontal: 15,
         marginVertical: 3
     },
@@ -252,7 +259,6 @@ const styles = StyleSheet.create({
         padding: 12,
         paddingHorizontal: 15,
         marginVertical: 3
->>>>>>> 54dd9a5343111fc516095be7e5f2435807a9f4ab
     },
     message: {
         fontSize: fontSize.large,
