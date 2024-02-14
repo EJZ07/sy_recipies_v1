@@ -262,6 +262,17 @@ export default function CheckRecipe() {
               }
             </View>
           </View>
+          <View style={{
+                flexDirection: 'row',
+                width: "100%",
+                flexWrap: "wrap",
+                gap: 10,
+                rowGap: 8,
+            }}>
+            {data.tags?.map((tag) => (
+                <TagItem key={tag.id} tag={tag}/>
+            ))}      
+          </View>
           <Text style={[styles.name, { color: colorScheme.text, }]}>{data.title}</Text>
           <Pressable style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingTop: 15 }}
             onPress={() => {

@@ -19,7 +19,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Skeleton } from '@rneui/base'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import TagItem from '../../components/TagItem'
-import tags from '../../utils/Tags'
+import tags from '../../utils/Tags';
 
 type ModalProps = {
   isVisible?: boolean;
@@ -99,32 +99,36 @@ export default function Create() {
 
   const addTag = useCallback((tag : Tag) => {
         
-    setSelection((currentSelection) => {
-        if(currentSelection.tags.some((existingTag) => existingTag === tag)) {
-            return currentSelection;
-        }
+    if(selection.tags) {
+      setSelection((currentSelection) => {
+          if(currentSelection.tags.some((existingTag) => existingTag === tag)) {
+              return currentSelection;
+          }
 
-        return { ...currentSelection, tags: [...currentSelection.tags, tag] }
-    })
+          return { ...currentSelection, tags: [...currentSelection.tags, tag] }
+      })
+    }
   }, [selection, setSelection])
 
   const removeTag = useCallback((tag : Tag) => {
 
+    if(selection.tags) {
       setSelection((currentSelection) => {
 
-          const index = currentSelection.tags.indexOf(tag)
+        const index = currentSelection.tags.indexOf(tag)
 
-          if(index < 0 || currentSelection.tags.length < 1) {
-              return currentSelection;
-          }
+        if(index < 0 || currentSelection.tags.length < 1) {
+            return currentSelection;
+        }
 
-          console.log([...currentSelection.tags])
-          const temparr = [...currentSelection.tags]
-          temparr.splice(index, 1)
+        console.log([...currentSelection.tags])
+        const temparr = [...currentSelection.tags]
+        temparr.splice(index, 1)
 
-          return { ...currentSelection, tags: temparr }
+        return { ...currentSelection, tags: temparr }
 
       })
+    }
   }, [selection, setSelection])
 
   return (
@@ -182,7 +186,7 @@ export default function Create() {
                     )}
                   />
               </View>
-              {selection.tags.length > 0 && <Text style={{color: "#FFFFFF"}}>
+              {selection.tags?.length > 0 && <Text style={{color: "#FFFFFF"}}>
                 Current Tags
               </Text>}
               <View style={{
@@ -192,7 +196,7 @@ export default function Create() {
                       gap: 10,
                       rowGap: 8,
                   }}>
-                  {selection.tags.map((tag) => (
+                  {selection.tags?.map((tag) => (
                       <Pressable onPress={() => {removeTag(tag)}}>
                           <TagItem key={tag.id} tag={tag}/>
                       </Pressable>
