@@ -12,6 +12,7 @@ import { AntDesign } from '@expo/vector-icons';
 import * as ImageManipulator from 'expo-image-manipulator'
 import { Entypo } from '@expo/vector-icons';
 import { firestore, storage } from '../../firebase/config';
+import { ref, uploadBytesResumable, getDownloadURL, getStorage, deleteObject } from "firebase/storage";
 import { doc, onSnapshot, collection, query, getDocs, setDoc, deleteDoc } from 'firebase/firestore';
 import { addPost, follow, unfollow } from '../../utils/firebaseFunctions'
 import { Feather } from '@expo/vector-icons';
@@ -22,7 +23,6 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { showToast } from '../../utils/ShowToast'
 import { Skeleton } from '@rneui/base'
-import { ref, uploadBytesResumable, getDownloadURL, } from "firebase/storage";
 
 type ModalProps = {
   isVisible?: boolean;
@@ -100,6 +100,18 @@ export default function Recipe() {
   }
 
   const handleRemoveIngredients = () => {
+    const storage = getStorage();
+  
+    // Create a reference to the file to delete
+    const desertRef = ref(storage, steps[-1].image);
+
+    // Delete the file
+    deleteObject(desertRef).then(() => {
+      // File deleted successfully
+    }).catch((error) => {
+      // Uh-oh, an error occurred!
+      console.log("Deleting image ERROR: ", error)
+    });
     let temp = [...steps]
     temp.pop()
     setSteps(temp);
@@ -114,8 +126,8 @@ export default function Recipe() {
   const handleImageChange = async (index) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
+      allowsEditing: false,
+      aspect: [9, 16],
       quality: 1,
     });
 
@@ -123,9 +135,7 @@ export default function Recipe() {
 
     if (!result.canceled) {
       console.log("image selected: ", result.assets[0].uri)
-      let newArr = [...steps]
-      newArr[index].image = result.assets[0].uri
-      setSteps(newArr)
+
       let actions = [];
       actions.push({ resize: { width: 300 } });
       const manipulatorResult = await ImageManipulator.manipulateAsync(
@@ -138,7 +148,7 @@ export default function Recipe() {
       const localUri = await fetch(manipulatorResult.uri);
       const localBlob = await localUri.blob();
       const filename = userData.id + new Date().getTime()
-      const storageRef = ref(storage, `comments/${userData.id}/` + filename)
+      const storageRef = ref(storage, `posts/steps/${userData.id}/` + filename)
       const uploadTask = uploadBytesResumable(storageRef, localBlob)
       uploadTask.on('state_changed',
         (snapshot) => {
@@ -152,8 +162,10 @@ export default function Recipe() {
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setProgress('')
-          
 
+            let newArr = [...steps]
+            newArr[index].image = downloadURL
+            setSteps(newArr)
           });
         }
       );

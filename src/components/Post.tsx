@@ -45,10 +45,14 @@ export default function Post(props) {
 
     return (
         <Pressable style={[colorScheme.content, styles.plate, { width: deviceWidth / 2, }]} onPress={() => {
-            navigation.navigate(
-                'Look',
-                {data: data,
-                id: id})
+            navigation.navigate('Home', {
+                screen: 'Look',
+                params: {
+                    data: data,
+                    id: id,
+                    from: 'HomeStack'
+                }
+            })
         }}>
             {
                 index % 2 != 0 ? <View style={[styles.right, { width: deviceWidth / 2.1,}]}>

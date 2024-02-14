@@ -25,7 +25,7 @@ import navigation from '../../routes/navigation'
 export default function CheckRecipe() {
   const route = useRoute()
   const navigation = useNavigation()
-  const url = Linking.createURL("/");
+  const url = Linking.createURL("/Look");
   const deviceWidth = useWindowDimensions().width;
   const deviceHeight = useWindowDimensions().height
   const { data, id } = route.params
@@ -46,7 +46,7 @@ export default function CheckRecipe() {
   const [likes, setLikes] = useState(data?.likeCount)
   const { setTitle } = useContext(HomeTitleContext)
 
-  const [rows, setRows] = useState(data?.ingredients.reduce(function (rows, key, index) {
+  const [rows, setRows] = useState(data?.ingredients?.reduce(function (rows, key, index) {
     return (index % 2 == 0 ? rows.push([key])
       : rows[rows.length - 1].push(key)) && rows;
   }, []))
@@ -56,6 +56,22 @@ export default function CheckRecipe() {
     content: isDark ? styles.darkContent : styles.lightContent,
     text: isDark ? colors.white : colors.primaryText
   }
+
+    useEffect(() => {
+    console.log("ID FROM EXTERNAL LINK: ", id)
+    
+  }, [])
+
+  useEffect(() => {
+    const unsubscribe = navigation.getParent().addListener('tabPress', (e) => {
+      // Do something
+      navigation.navigate("HomeStack")
+    });
+
+    return unsubscribe;
+  }, []);
+
+ 
 
   const handleFollow = () => {
     follow({ userData, data })
@@ -107,9 +123,7 @@ export default function CheckRecipe() {
         `Your message. ${url}`,
     })
 
-
   }
-
 
   const getCurrentUser = async () => {
     console.log("current user")
@@ -132,6 +146,8 @@ export default function CheckRecipe() {
     }
 
   }
+
+
 
   const getComments = async () => {
     console.log("getComments")
@@ -284,7 +300,7 @@ export default function CheckRecipe() {
           </Pressable>
           <ScrollView style={{ paddingTop: 5, overflow: "scroll", maxHeight: fontSize.large * 6 }}>
             {
-              rows.map((ing, index) => (
+              rows && rows.map((ing, index) => (
                 <View style={{ flexDirection: "row" }}>
                   <Ingredientcheck key={index + 1} ingredient={ing[0]} id={id} />
                   {ing[1] ? <Ingredientcheck key={index + 2} ingredient={ing[1]} id={id} /> : ""}
