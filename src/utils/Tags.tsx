@@ -19,7 +19,7 @@ export function useDarkTextColor(bgColor : ColorValue) {
     
 }
 
-class Tag {
+export class Tag {
     #name : string
     #backgroundColor : ColorValue
     #textColor : ColorValue
