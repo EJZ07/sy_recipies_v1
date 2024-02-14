@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext, Dispatch, SetStateAction } from 'react'
-import { Text, View, StyleSheet, TextInput, KeyboardAvoidingView, Platform, Dimensions, Image, ScrollView, Touchable } from 'react-native'
+import React, { useCallback, useState, useEffect, useContext, Dispatch, SetStateAction } from 'react'
+import { Pressable, FlatList, Text, View, StyleSheet, TextInput, KeyboardAvoidingView, Platform, Dimensions, Image, ScrollView, Touchable } from 'react-native'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import Button from '../../components/Button'
 import { useRoute, useFocusEffect, useNavigation, StackActions } from '@react-navigation/native'
@@ -18,6 +18,8 @@ import styles from './styles'
 import * as ImagePicker from 'expo-image-picker';
 import { Skeleton } from '@rneui/base'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import TagItem from '../../components/TagItem'
+import tags from '../../utils/Tags'
 
 type ModalProps = {
   isVisible?: boolean;
@@ -95,6 +97,36 @@ export default function Create() {
     }
   }
 
+  const addTag = useCallback((tag : Tag) => {
+        
+    setSelection((currentSelection) => {
+        if(currentSelection.tags.some((existingTag) => existingTag === tag)) {
+            return currentSelection;
+        }
+
+        return { ...currentSelection, tags: [...currentSelection.tags, tag] }
+    })
+  }, [selection, setSelection])
+
+  const removeTag = useCallback((tag : Tag) => {
+
+      setSelection((currentSelection) => {
+
+          const index = currentSelection.tags.indexOf(tag)
+
+          if(index < 0 || currentSelection.tags.length < 1) {
+              return currentSelection;
+          }
+
+          console.log([...currentSelection.tags])
+          const temparr = [...currentSelection.tags]
+          temparr.splice(index, 1)
+
+          return { ...currentSelection, tags: temparr }
+
+      })
+  }, [selection, setSelection])
+
   return (
     <View>
       <ScrollView bounces={false} keyboardShouldPersistTaps={'always'} keyboardDismissMode="on-drag">
@@ -129,6 +161,45 @@ export default function Create() {
           }} />
           </TouchableOpacity>}
 
+          <View style={{
+            flexDirection: 'column',
+            paddingBottom: 5
+          }}>
+              <View style={{
+                  flexDirection: 'row',
+                  paddingBottom: 5,
+              }}>
+                  <FlatList 
+                    data={tags}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    keyExtractor={(item) => item.id}
+                    ItemSeparatorComponent={<View style={{paddingHorizontal: 5}} />}
+                    renderItem={({item}) => (
+                      <Pressable onPress={() => {addTag(item)}}>
+                          <TagItem tag={item}/>
+                      </Pressable>
+                    )}
+                  />
+              </View>
+              {selection.tags.length > 0 && <Text style={{color: "#FFFFFF"}}>
+                Current Tags
+              </Text>}
+              <View style={{
+                      flexDirection: 'row',
+                      width: "100%",
+                      flexWrap: "wrap",
+                      gap: 10,
+                      rowGap: 8,
+                  }}>
+                  {selection.tags.map((tag) => (
+                      <Pressable onPress={() => {removeTag(tag)}}>
+                          <TagItem key={tag.id} tag={tag}/>
+                      </Pressable>
+                  ))}      
+              </View>
+          </View>
+
           <View style={{ flexDirection: "row" }}>
 
             {
@@ -144,6 +215,7 @@ export default function Create() {
 
                 : ""
             }
+
 
             <Button
               label='Next'

@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect } from 'react'
 import { firestore, } from '../firebase/config';
 import { doc, onSnapshot, collection, query, getDocs, setDoc, deleteDoc } from 'firebase/firestore';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import Tag from '../utils/Tags'
 
 export const UserDataContext = createContext();
 
@@ -10,7 +11,7 @@ export const UserDataContextProvider = (props) => {
   const [followList, setFollowList] = useState([])
   const [savedList, setSavedList] = useState([])
   const [likedList, setLikedList] = useState([])
-  const [selection, setSelection] = useState({title: "", image: "", ingredients: [""], steps: [{ text: "", image: "" }]})
+  const [selection, setSelection] = useState({title: "", tags: [], image: "", ingredients: [""], steps: [{ text: "", image: "" }]})
 
   useEffect(() => {
     getLiked()

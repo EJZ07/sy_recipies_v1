@@ -23,6 +23,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { showToast } from '../../utils/ShowToast'
 import { Skeleton } from '@rneui/base'
 import { ref, uploadBytesResumable, getDownloadURL, } from "firebase/storage";
+import tags from '../../utils/Tags';
 
 type ModalProps = {
   isVisible?: boolean;
@@ -67,6 +68,7 @@ export default function Recipe() {
     console.log("Post Selection: ", selection)
     const data = {
       id: userData.id,
+      tags: selection.tags,
       name: userData.fullName,
       image: selection.image,
       avatar: userData.avatar,
