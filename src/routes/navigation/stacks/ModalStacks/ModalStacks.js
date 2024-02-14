@@ -6,6 +6,7 @@ import Post from "../../../../scenes/post";
 import Print from "../../../../scenes/print";
 import Create from "../../../../scenes/Create";
 import Otheruser from "../../../../scenes/Otheruser";
+import Dm from "../../../../scenes/Dm";
 
 const Stack = createStackNavigator()
 
@@ -27,6 +28,14 @@ export const ModalStacks = () => {
             }}
           >
             <Stack.Screen
+              name='Create'
+              component={Create}
+              options={{
+                title: ctx.title,
+                headerBackTitle: '',
+              }}
+            />
+            <Stack.Screen
               name='Post'
               component={Post}
               options={{
@@ -38,18 +47,21 @@ export const ModalStacks = () => {
               name='Other-User'
               component={Otheruser}
               options={{
-                title: ctx.title,
+                headerShown: false,
+            
                 headerBackTitle: '',
               }}
             />
-            <Stack.Screen
-              name='Create'
-              component={Create}
+             <Stack.Screen
+              name='DirectMessage'
+              component={Dm}
               options={{
-                title: ctx.title,
+                headerShown: false,
+            
                 headerBackTitle: '',
               }}
             />
+
             <Stack.Screen
               name='Print'
               component={Print}

@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Platform } from "react-native";
+import { Platform} from "react-native";
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack'
 import TabNavigator from "../tabs/Tabs";
 import { ModalStacks } from "../stacks/ModalStacks/ModalStacks";
@@ -9,6 +9,11 @@ import { setDoc, doc } from 'firebase/firestore';
 import { UserDataContext } from "../../../context/UserDataContext";
 import * as Device from 'expo-device';
 import { expoProjectId } from "../../../config";
+import * as Linking from "expo-linking";
+import Create from "../../../scenes/Create";
+
+import { CreateNavigator } from "../stacks/CreateNavigator";
+import { FlagContext } from "../../../context/FlagContext";
 
 const Stack = createStackNavigator()
 
@@ -21,8 +26,11 @@ Notifications.setNotificationHandler({
 });
 
 export default function RootStack() {
-  const { userData, getFollowers } = useContext(UserDataContext)
+  const { userData, getFollowers, getLiked, getSaved} = useContext(UserDataContext)
+  const {setDeepLink} = useContext(FlagContext)
   const isIos = Platform.OS === 'ios'
+
+  const [data, setData] = useState(null)
 
   useEffect(() => {
 
@@ -50,14 +58,9 @@ export default function RootStack() {
     })();
 
     getFollowers()
+    getLiked()
+    getSaved()
   }, [userData])
-
-  useEffect(() => {
-    const subscription = Notifications.addNotificationReceivedListener(notification => {
-      console.log(notification.request.content)
-    });
-    return () => subscription.remove();
-  }, []);
 
   return (
     <Stack.Navigator
@@ -69,6 +72,9 @@ export default function RootStack() {
         name='HomeRoot'
         component={TabNavigator}
       />
+      <Stack.Screen 
+      name="Create"
+      component={CreateNavigator} />
       <Stack.Group
         screenOptions={{
           presentation: 'modal',

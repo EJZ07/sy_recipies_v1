@@ -10,7 +10,7 @@ export default function ScreenTemplate(props) {
   const { isLoading, isError } = props
   const { scheme } = useContext(ColorSchemeContext)
   const isDark = scheme === 'dark'
-  const container = isDark?styles.darkContainer: styles.container
+  const container = isDark ? styles.darkContainer: styles.container
 
   if(isLoading) {
     return <LoadingScreen />

@@ -3,12 +3,12 @@ import { StyleSheet, TouchableOpacity, Text, View } from "react-native";
 import { fontSize, colors } from "../theme";
 
 export default function Button(props) {
-  const { label, onPress, color, disable } = props
+  const { label, onPress, color, disable, buttonStyle, textColor } = props
 
   if(disable) {
     return (
       <View
-        style={[styles.button, { backgroundColor: color, opacity: 0.3 }]}
+        style={[styles.button, { backgroundColor: color, opacity: 0.3 }, buttonStyle]}
       >
         <Text style={styles.buttonText}>{label}</Text>
       </View>
@@ -17,10 +17,10 @@ export default function Button(props) {
   
   return (
     <TouchableOpacity
-      style={[styles.button, { backgroundColor: color }]}
+      style={[styles.button, { backgroundColor: color }, buttonStyle]}
       onPress={onPress}
     >
-      <Text style={styles.buttonText}>{label}</Text>
+      <Text style={[styles.buttonText, textColor]}>{label}</Text>
     </TouchableOpacity>
   )
 }
