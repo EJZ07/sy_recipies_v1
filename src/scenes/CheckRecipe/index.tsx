@@ -25,7 +25,7 @@ import navigation from '../../routes/navigation'
 export default function CheckRecipe() {
   const route = useRoute()
   const navigation = useNavigation()
-  const url = Linking.createURL("/");
+
   const deviceWidth = useWindowDimensions().width;
   const deviceHeight = useWindowDimensions().height
   const { data, id } = route.params
@@ -33,7 +33,7 @@ export default function CheckRecipe() {
     savedList, setSavedList, likedList, setLikedList,
     getSaved, getLiked } = useContext(UserDataContext)
   const { rerender, setRerender } = useContext(FlagContext)
-
+   
   const { scheme } = useContext(ColorSchemeContext)
   const [date, setDate] = useState('')
   const [saved, setSaved] = useState(false)
@@ -42,11 +42,17 @@ export default function CheckRecipe() {
   const [showComments, setShowComments] = useState(false)
   const [showCreate, setShowCreate] = useState(false)
   const [hasBeenFollowed, setHasBeenFollowed] = useState(false)
+
+  const getNewData = () => {
+    return {title: "Hello", image: "111", ingredients: ['seeds', "peas", 'collard greens']}
+  }
+
+  const [newData, setNewDate] = useState(data == undefined ? getNewData() : data)
   const [currentUser, setCurrentUser] = useState({})
-  const [likes, setLikes] = useState(data?.likeCount)
+  const [likes, setLikes] = useState(newData?.likeCount)
   const { setTitle } = useContext(HomeTitleContext)
 
-  const [rows, setRows] = useState(data?.ingredients.reduce(function (rows, key, index) {
+  const [rows, setRows] = useState(newData?.ingredients.reduce(function (rows, key, index) {
     return (index % 2 == 0 ? rows.push([key])
       : rows[rows.length - 1].push(key)) && rows;
   }, []))
@@ -57,44 +63,54 @@ export default function CheckRecipe() {
     text: isDark ? colors.white : colors.primaryText
   }
 
+
+  useEffect(() => {
+    const unsubscribe = navigation.getParent().addListener('tabPress', (e) => {
+      // Do something
+      navigation.navigate("HomeStack")
+    });
+
+    return unsubscribe;
+  }, []);
+
   const handleFollow = () => {
-    follow({ userData, data })
-    setFollowList([...followList, data.id])
+    follow({ userData, newData })
+    setFollowList([...followList, newData.id])
     setHasBeenFollowed(true)
 
   }
 
   const handleUnfollow = async () => {
 
-    unfollow({ userData, data })
-    setFollowList(followList.filter(follow => follow !== data.id))
+    unfollow({ userData, newData })
+    setFollowList(followList.filter(follow => follow !== newData.id))
 
     setHasBeenFollowed(false)
   }
 
   const handleSave = async () => {
-    save({ userData, data, id })
+    save({ userData, newData, id })
     setSavedList([...savedList, id])
 
     setSaved(true)
   }
 
   const handleUnsave = async () => {
-    unsave({ userData, data, id })
+    unsave({ userData, newData, id })
     setSavedList(likedList.filter(save => save !== id))
 
     setSaved(false)
   }
 
   const handleLike = async () => {
-    like({ userData, data, id })
+    like({ userData, newData, id })
     setLikedList([...likedList, id])
     setLikes(likes + 1)
     setLiked(true)
   }
 
   const handleUnLike = async () => {
-    unLike({ userData, data, id })
+    unLike({ userData, newData, id })
     setLikedList(likedList.filter(like => like !== id))
     setLikes(likes - 1)
     setLiked(false)
@@ -102,20 +118,18 @@ export default function CheckRecipe() {
 
   const handleShare = async () => {
 
-    Share.share({
-      message:
-        `Your message. ${url}`,
-    })
-
+    // Share.share({
+    //   message:
+    //     // `Your message. ${url}`,
+    // })
 
   }
-
 
   const getCurrentUser = async () => {
     console.log("current user")
     try {
       const usersRef = await collection(firestore, 'users')
-      const q = query(usersRef, where("id", "==", data.id));
+      const q = query(usersRef, where("id", "==", newData.id));
       let temp = []
       const querySnapshot = await getDocs(q);
 
@@ -132,6 +146,8 @@ export default function CheckRecipe() {
     }
 
   }
+
+
 
   const getComments = async () => {
     console.log("getComments")
@@ -157,10 +173,14 @@ export default function CheckRecipe() {
   }
 
   useEffect(() => {
+    console.log("ID FROM EXTERNAL LINK: ", id)
+  }, [])
+
+  useEffect(() => {
     console.log("Post data: ", data)
     getCurrentUser()
     getComments()
-    console.log(url)
+    // console.log(url)
   }, [rerender])
 
 
@@ -169,7 +189,7 @@ export default function CheckRecipe() {
     console.log("data: ", data)
 
     followList.forEach((follow) => {
-      if (follow == data.id) setHasBeenFollowed(true)
+      if (follow == newData.id) setHasBeenFollowed(true)
     })
 
     savedList.forEach((save) => {
@@ -185,7 +205,7 @@ export default function CheckRecipe() {
 
   useFocusEffect(() => {
     console.log("holl")
-    setTitle(data.fullName)
+    setTitle(newData.fullName)
   });
 
   return (
@@ -198,11 +218,11 @@ export default function CheckRecipe() {
           navigation.navigate(
             'MakeRecipe',
             {
-              data: data,
+              data: newData,
               id: id
             })
         }}>
-          <Image source={{ uri: data.image }} style={{
+          <Image source={{ uri: newData.image }} style={{
             width: deviceWidth,
             height: deviceHeight / 1.6,
             borderTopRightRadius: 20,
@@ -232,10 +252,10 @@ export default function CheckRecipe() {
                     }
                   })
                 }}
-                source={{ uri: data.avatar }}
+                source={{ uri: newData.avatar }}
               />
               <View style={{ flexDirection: "column", marginLeft: 12 }}>
-                <Text style={[styles.title, { color: colorScheme.text }]}>{data.name}</Text>
+                <Text style={[styles.title, { color: colorScheme.text }]}>{newData.name}</Text>
                 {currentUser?.followers == 0 ? <Text style={[styles.contents, { color: colorScheme.text }]}>{currentUser.followers} follower{currentUser?.followers == 1 ? "" : "s"}</Text> :
                   <Text style={[styles.contents, { color: colorScheme.text }]}>{currentUser.followers} follower{currentUser?.followers == 1 ? "" : "s"}</Text>}
 
@@ -262,13 +282,13 @@ export default function CheckRecipe() {
               }
             </View>
           </View>
-          <Text style={[styles.name, { color: colorScheme.text, }]}>{data.title}</Text>
+          <Text style={[styles.name, { color: colorScheme.text, }]}>{newData.title}</Text>
           <Pressable style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingTop: 15 }}
             onPress={() => {
               navigation.navigate(
                 'SeeAllIngredients',
                 {
-                  list: data?.ingredients,
+                  list: newData?.ingredients,
                   id: id
                 })
             }}>
@@ -277,7 +297,7 @@ export default function CheckRecipe() {
               navigation.navigate(
                 'SeeAllIngredients',
                 {
-                  name: data?.ingredients,
+                  name: newData?.ingredients,
                   id: id
                 })
             }} />

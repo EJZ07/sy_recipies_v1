@@ -14,21 +14,26 @@ export default function App() {
   const { scheme } = useContext(ColorSchemeContext)
   const { userData } = useContext(UserDataContext)
   const [title, setTitle] = useState('default title')
-  const prefix = Linking.createURL('/')
-  const linking = {
-    prefixes: [prefix],
-    config: {
-      screens: {
-        Home: "HomeStack",
-        Look: "Look",
-        Profile: "ProfileTab"
-      }
-    }
-  };
+  // const prefix = Linking.createURL("/")
+  // const linking = {
+  //   prefixes: [prefix],
+  //   config: {
+  //     screens: {
+  //       RootStack: "HomeStack",
+  //       Look: "Look",
+  //       Profile: "ProfileTab",
+  //       LoginNavigator: "Login"
+  //     }
+  //   }
+  // };
+
+  // useEffect(()=>{
+  //   console.log("Deep Link: ", prefix)
+  // }, [])
 
   return (
     <>
-      <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme} linking={linking}>
+      <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme} >
         {userData?
           <RootStack/>
           :
