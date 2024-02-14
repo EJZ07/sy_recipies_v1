@@ -19,7 +19,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Skeleton } from '@rneui/base'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import TagItem from '../../components/TagItem'
-import tags, { Tag } from '../../utils/Tags';
+import tags from '../../utils/Tags';
 
 type ModalProps = {
   isVisible?: boolean;
@@ -36,7 +36,7 @@ export default function Create() {
   const [date, setDate] = useState('')
   const [image, setImage] = useState(selection.image)
   const [text, setText] = useState(selection.title)
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([])
+  const [selectedTags, setSelectedTags] = useState([])
   const [isVisible, setIsVisible] = useState(true)
   const navigation = useNavigation()
   const isDark = scheme === 'dark'
@@ -76,7 +76,7 @@ export default function Create() {
   }
 
   const handleSave = () => {
-    setSelection({ ...selection, title: text, tags: tags })
+    setSelection({ ...selection, title: text, tags: selectedTags })
     navigation.navigate("Guide")
   }
 
@@ -99,6 +99,9 @@ export default function Create() {
   }
 
   const addTag = useCallback((tag : Tag) => {
+    if(selectedTags.includes(tag)) {
+      return;
+    }
     setSelectedTags([...selectedTags, tag])
   }, [selectedTags, setSelectedTags])
 
@@ -160,7 +163,7 @@ export default function Create() {
                     data={tags}
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => Math.random() * 9999}
                     ItemSeparatorComponent={<View style={{paddingHorizontal: 5}} />}
                     renderItem={({item}) => (
                       <Pressable onPress={() => {addTag(item)}}>
@@ -181,7 +184,7 @@ export default function Create() {
                   }}>
                   {selectedTags?.map((tag) => (
                       <Pressable onPress={() => {removeTag(tag)}}>
-                          <TagItem key={tag.id} tag={tag}/>
+                          <TagItem key={Math.random() * 9999} tag={tag}/>
                       </Pressable>
                   ))}      
               </View>
@@ -190,7 +193,7 @@ export default function Create() {
           <View style={{ flexDirection: "row" }}>
 
             {
-              image.length > 1 ?
+              image != undefined ?
                 <View style={{ marginRight: 10 }}>
                   <Button
                     label='remove'

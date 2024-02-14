@@ -21,6 +21,7 @@ import CreateComment from '../../components/Createcomment'
 import { FlatList } from 'react-native-gesture-handler'
 import Ingredientcheck from '../../components/Ingredientcheck'
 import navigation from '../../routes/navigation'
+import TagItem from '../../components/TagItem'
 
 export default function CheckRecipe() {
   const route = useRoute()
@@ -270,7 +271,7 @@ export default function CheckRecipe() {
                 rowGap: 8,
             }}>
             {data.tags?.map((tag) => (
-                <TagItem key={tag.id} tag={tag}/>
+                <TagItem key={Math.random() * 9999} tag={tag}/>
             ))}      
           </View>
           <Text style={[styles.name, { color: colorScheme.text, }]}>{data.title}</Text>

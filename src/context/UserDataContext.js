@@ -2,7 +2,6 @@ import React, { createContext, useState, useEffect } from 'react'
 import { firestore, } from '../firebase/config';
 import { doc, onSnapshot, collection, query, getDocs, setDoc, deleteDoc } from 'firebase/firestore';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
-import Tag from '../utils/Tags'
 
 export const UserDataContext = createContext();
 

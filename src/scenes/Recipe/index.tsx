@@ -79,17 +79,23 @@ export default function Recipe() {
       comments: [],
       createdAt: new Date()
     }
-    addPost({ userData, data })
-    setRerender(!rerender)
-    showToast({
-      title: 'Recipe Posted',
-      body: 'Recipe Posted',
-      isDark
-    })
+    try {
+      addPost({ userData, data })
+      setRerender(!rerender)
+      showToast({
+        title: 'Recipe Posted',
+        body: 'Recipe Posted',
+        isDark
+      })
+      
+      setSelection({title: "", tags: [], image: "", ingredients: [""], steps: [{ text: "", image: "" }]})
+      navigation.navigate("Home")
+    }
+    catch(e){
+      console.log("Adding post error: ", e)
+    }
 
 
-    setSelection({})
-    navigation.navigate("Home")
   }
 
   const handleIngredients = (index, value) => {
