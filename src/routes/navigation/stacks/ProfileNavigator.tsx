@@ -4,8 +4,9 @@ import { ColorSchemeContext } from '../../../context/ColorSchemeContext'
 import { lightProps, darkProps } from './navigationProps/navigationProps'
 import HeaderStyle from './headerComponents/HeaderStyle'
 
-import Profile from '../../../scenes/profile'
+import Profile from '../../../scenes/Profile'
 import Edit from '../../../scenes/Edit'
+import Live from '../../../scenes/Live'
 
 const Stack = createStackNavigator()
 const RootStack = createStackNavigator()
@@ -19,6 +20,13 @@ export const ProfileNavigator = () => {
         <Stack.Screen
           name="Profile"
           component={Profile}
+          options={({ navigation }) => ({
+            headerBackground: scheme === 'dark' ? null: () => <HeaderStyle />,
+          })}
+        />
+         <Stack.Screen
+          name="LiveStream"
+          component={Live}
           options={({ navigation }) => ({
             headerBackground: scheme === 'dark' ? null: () => <HeaderStyle />,
           })}

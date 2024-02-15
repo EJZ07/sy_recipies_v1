@@ -1,80 +1,89 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import FontIcon from 'react-native-vector-icons/FontAwesome5'
+import { AntDesign } from '@expo/vector-icons';
 import { colors } from 'theme'
 
 // stack navigators
-import { HomeNavigator, ProfileNavigator, ConnectNavigator } from '../stacks'
+import { HomeNavigator, ProfileNavigator, ConnectNavigator,  } from '../stacks'
+import { ModalStacks } from '../stacks/ModalStacks/ModalStacks';
+import { DefaultTheme, DarkTheme, NavigationContainer } from '@react-navigation/native'
+import Create from '../../../scenes/Create';
+import Mock from '../../../scenes/Mock';
+import Lessons from '../../../scenes/Lessons';
 
 const Tab = createBottomTabNavigator()
 
+
 const TabNavigator = () => {
+ 
+  
   return (
-    <Tab.Navigator
-      options={{
-        tabBarStyle: {
-          // backgroundColor: 'white',
-          // borderTopColor: 'gray',
-          // borderTopWidth: 1,
-          // paddingBottom: 5,
-          // paddingTop: 5,
-        }
-      }}
-      defaultScreenOptions={{
-        headerShown: false,
-        headerTransparent: true
-      }}
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarActiveTintColor: colors.lightPurple,
-        tabBarInactiveTintColor: colors.gray,
-      })}
-      initialRouteName="HomeTab"
-      swipeEnabled={false}
-    >
-      <Tab.Screen
-        name="HomeTab"
-        component={HomeNavigator}
-        options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: ({ color, size }) => (
-            <FontIcon
-              name="home"
-              color={color}
-              size={size}
-            />
-          ),
+
+      <Tab.Navigator
+
+        defaultScreenOptions={{
+          headerShown: false,
+          headerTransparent: true
         }}
-      />
-      <Tab.Screen
-        name="ConnectTab"
-        component={ConnectNavigator}
-        options={{
-          tabBarLabel: 'Connect',
-          tabBarIcon: ({ color, size }) => (
-            <FontIcon
-              name="share-alt"
-              color={color}
-              size={size}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="ProfileTab"
-        component={ProfileNavigator}
-        options={{
-          tabBarLabel: 'Profile',
-          tabBarIcon: ({ color, size }) => (
-            <FontIcon
-              name="user"
-              color={color}
-              size={size}
-            />
-          ),
-        }}
-      />
-    </Tab.Navigator>
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          tabBarActiveTintColor: colors.lightPurple,
+          tabBarInactiveTintColor: colors.gray,
+        })}
+        initialRouteName="Home"
+        swipeEnabled={false}
+      >
+        <Tab.Screen
+          name="Home"
+          tabBarLabel="R"
+          component={HomeNavigator}
+        
+          options={{
+            headerShown: false,
+            tabBarShowLabel: false,
+            tabBarIcon: ({ color, size }) => (
+              <FontIcon
+                name="home"
+                color={color}
+                size={20}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="ConnectTab"
+
+          component={Mock}
+          options={{
+            tabBarShowLabel: false,
+            tabBarIcon: ({ color, size }) => (
+              <AntDesign name="plussquareo" size={28} color={color} />
+            ),
+          }}
+          listeners={({ navigation }) => ({
+            tabPress: (e) => {
+              e.preventDefault()
+              navigation.navigate("Create")
+            },
+          })}
+        />
+        <Tab.Screen
+          name="ProfileTab"
+          component={ProfileNavigator}
+          options={{
+            tabBarShowLabel: false,
+            tabBarIcon: ({ color, size }) => (
+              <FontIcon
+                name="user"
+                color={color}
+                size={20}
+              />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    
   )
 }
 

@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "reactnative-expo-firebase-boilerplate-v2",
-    "slug": "reactnative-expo-firebase-boilerplate-v2",
+    "name": "sy Recipes",
+    "scheme": "recipes",
+    "slug": "syrian-recipies",
     "privacy": "public",
     "platforms": [
       "ios",
@@ -18,27 +19,43 @@
     "updates": {
       "enabled": true,
       "fallbackToCacheTimeout": 10000,
-      "url": "https://u.expo.dev/1650611b-a5b8-4420-9656-60c06429edd4"
+      "url": "https://u.expo.dev/aae4f0f1-4ae1-49b1-813c-e6a77a7095f2"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "reactnative.expo.firebase.boilerplate",
+      "bundleIdentifier": "com.syrian.recipes",
       "buildNumber": "1.0.0",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Use the photo library to change your avatar."
       },
-      "userInterfaceStyle": "automatic"
+      "userInterfaceStyle": "automatic",
+      "usesAppleSignIn": false,
+      "bitcode": false
     },
     "android": {
-      "package": "reactnative.expo.firebase.boilerplate",
+      "package": "com.expo.syrian.recipes",
       "versionCode": 1,
       "userInterfaceStyle": "automatic",
       "permissions": [
         "VIBRATE",
-        "CAMERA"
+        "CAMERA",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MICROPHONE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION",
+        "android.permission.BLUETOOTH",
+        "android.permission.BLUETOOTH_CONNECT",
+        "android.permission.BLUETOOTH_ADMIN",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.CAMERA",
+        "android.permission.INTERNET",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.WAKE_LOCK"
       ]
     },
     "packagerOpts": {
@@ -53,15 +70,33 @@
     },
     "description": "",
     "plugins": [
-      "expo-font"
+      
+      "@stream-io/video-react-native-sdk",
+      "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraMavenRepos": ["../../node_modules/@notifee/react-native/android/libs"]
+          }
+        }
+      ],
+      [
+        "@config-plugins/react-native-webrtc",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone"
+        }
+      ]
+      
     ],
-    "extra": {
-      "eas": {
-        "projectId": "1650611b-a5b8-4420-9656-60c06429edd4"
-      }
-    },
     "runtimeVersion": {
       "policy": "appVersion"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "aae4f0f1-4ae1-49b1-813c-e6a77a7095f2"
+      }
     }
   }
 }
