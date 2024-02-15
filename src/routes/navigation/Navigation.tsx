@@ -44,14 +44,14 @@ export default function App() {
               screens: {
                 HomeStack: "",
                 Look: {
-                  path: "look/:id/:data",
+                  path: "look/:id",
                   parse: {
                     id: (id) => `${id}`,
-                    data: (data) => `${data}`
+       
                   },
                   stringify: {
                     id: (id) => id.replace(/look-/g, ''),
-                    data: (data) => data.replace(/look-/g, ''),
+             
                   },
                 },
                 ProfileTab: "profile"

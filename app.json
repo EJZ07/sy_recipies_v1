@@ -36,7 +36,7 @@
       "bitcode": false
     },
     "android": {
-      "package": "reactnative.expo.firebase.boilerplate",
+      "package": "com.expo.syrian.recipes",
       "versionCode": 1,
       "userInterfaceStyle": "automatic",
       "permissions": [
@@ -70,8 +70,17 @@
     },
     "description": "",
     "plugins": [
+      
       "@stream-io/video-react-native-sdk",
       "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraMavenRepos": ["../../node_modules/@notifee/react-native/android/libs"]
+          }
+        }
+      ],
       [
         "@config-plugins/react-native-webrtc",
         {
@@ -79,6 +88,7 @@
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone"
         }
       ]
+      
     ],
     "runtimeVersion": {
       "policy": "appVersion"
