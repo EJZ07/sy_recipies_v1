@@ -6073,11 +6073,11 @@ expo-web-browser@~12.8.2:
   dependencies:
     compare-urls "^2.0.0"
     url "^0.11.0"
-
 expo@~50.0.6:
   version "50.0.6"
   resolved "https://registry.npmjs.org/expo/-/expo-50.0.6.tgz"
   integrity sha512-CVg0h9bmYeTWtw4EOL0HKNL+zu84YZl5nLWRPKrcpt8jox1VQQAYmvJGMdM5gSRxq5CFNLlWGxq9O8Zvfi1SOQ==
+
   dependencies:
     "@babel/runtime" "^7.20.0"
     "@expo/cli" "0.17.5"
