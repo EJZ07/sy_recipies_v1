@@ -9,7 +9,7 @@ import { HomeTitleContext } from '../../context/HomeTitleContext'
 import * as Linking from "expo-linking"
 import { UserDataContext } from '../../context/UserDataContext'
 import { firestore, } from '../../firebase/config';
-import { doc, onSnapshot, collection, query, getDocs, setDoc, deleteDoc, where, orderBy } from 'firebase/firestore';
+import { doc, onSnapshot, collection, query, getDocs, setDoc, deleteDoc, where, orderBy, getDoc } from 'firebase/firestore';
 import { follow, save, unfollow, unsave, like, unLike } from '../../utils/firebaseFunctions'
 import { AntDesign, Feather, FontAwesome5 } from '@expo/vector-icons';
 import { Avatar } from '@rneui/themed';
@@ -25,17 +25,22 @@ import navigation from '../../routes/navigation'
 export default function CheckRecipe() {
   const route = useRoute()
   const navigation = useNavigation()
-  const url = Linking.createURL("/");
-  const deviceWidth = useWindowDimensions().width;
-  const deviceHeight = useWindowDimensions().height
-  const { data, id } = route.params
+
   const { userData, followList, setFollowList, getFollowers,
     savedList, setSavedList, likedList, setLikedList,
     getSaved, getLiked } = useContext(UserDataContext)
   const { rerender, setRerender } = useContext(FlagContext)
-
   const { scheme } = useContext(ColorSchemeContext)
+
+  const deviceWidth = useWindowDimensions().width;
+  const deviceHeight = useWindowDimensions().height
+
+  const { id } = route.params
+  const url = Linking.createURL(`Look/${id}`);
+
+  const [data, setData] = useState({})
   const [date, setDate] = useState('')
+
   const [saved, setSaved] = useState(false)
   const [comments, setComments] = useState([{}])
   const [liked, setLiked] = useState(false)
@@ -44,18 +49,33 @@ export default function CheckRecipe() {
   const [hasBeenFollowed, setHasBeenFollowed] = useState(false)
   const [currentUser, setCurrentUser] = useState({})
   const [likes, setLikes] = useState(data?.likeCount)
+
   const { setTitle } = useContext(HomeTitleContext)
 
-  const [rows, setRows] = useState(data?.ingredients.reduce(function (rows, key, index) {
-    return (index % 2 == 0 ? rows.push([key])
-      : rows[rows.length - 1].push(key)) && rows;
-  }, []))
+  const [rows, setRows] = useState([])
 
   const isDark = scheme === 'dark'
   const colorScheme = {
     content: isDark ? styles.darkContent : styles.lightContent,
     text: isDark ? colors.white : colors.primaryText
   }
+
+    useEffect(() => {
+    console.log("ID FROM EXTERNAL LINK: ", id)
+
+    
+  }, [])
+
+  useEffect(() => {
+    const unsubscribe = navigation.getParent().addListener('tabPress', (e) => {
+      // Do something
+      navigation.navigate("HomeStack")
+    });
+
+    return unsubscribe;
+  }, []);
+
+ 
 
   const handleFollow = () => {
     follow({ userData, data })
@@ -107,9 +127,7 @@ export default function CheckRecipe() {
         `Your message. ${url}`,
     })
 
-
   }
-
 
   const getCurrentUser = async () => {
     console.log("current user")
@@ -132,6 +150,39 @@ export default function CheckRecipe() {
     }
 
   }
+
+  const getPost = async () => {
+    console.log("current user")
+    try {
+      const postRef = await doc(firestore, 'posts', id)
+      const docSnap = await getDoc(postRef);
+      console.log("Snap Data: ", docSnap.data())
+      const newData = docSnap.data();
+      setData(newData);
+      setRows(newData?.ingredients?.reduce(function (rows, key, index) {
+        return (index % 2 == 0 ? rows.push([key])
+          : rows[rows.length - 1].push(key)) && rows;
+      }, []))
+      followList.forEach((follow) => {
+        if (follow == newData.id) setHasBeenFollowed(true)
+      })
+  
+      savedList.forEach((save) => {
+        console.log("SAVE: ", save)
+        if (save == id) setSaved(true)
+      })
+  
+      likedList.forEach((like) => {
+        if (like == id) setLiked(true)
+      })
+
+    } catch (e) {
+      console.log("Error getting current user : ", e)
+    }
+
+  }
+
+
 
   const getComments = async () => {
     console.log("getComments")
@@ -157,31 +208,14 @@ export default function CheckRecipe() {
   }
 
   useEffect(() => {
-    console.log("Post data: ", data)
+    console.log("FOLLOWERS LIST: ", followList)
+    console.log("ID OF CREATOR: ", data.id)
     getCurrentUser()
     getComments()
-    console.log(url)
+    getPost()
+  
   }, [rerender])
 
-
-  useEffect(() => {
-    console.log('Liked List : ', likedList)
-    console.log("data: ", data)
-
-    followList.forEach((follow) => {
-      if (follow == data.id) setHasBeenFollowed(true)
-    })
-
-    savedList.forEach((save) => {
-      console.log("SAVE: ", save)
-      if (save == id) setSaved(true)
-    })
-
-    likedList.forEach((like) => {
-      if (like == id) setLiked(true)
-    })
-
-  }, [])
 
   useFocusEffect(() => {
     console.log("holl")
@@ -284,7 +318,7 @@ export default function CheckRecipe() {
           </Pressable>
           <ScrollView style={{ paddingTop: 5, overflow: "scroll", maxHeight: fontSize.large * 6 }}>
             {
-              rows.map((ing, index) => (
+              rows && rows.map((ing, index) => (
                 <View style={{ flexDirection: "row" }}>
                   <Ingredientcheck key={index + 1} ingredient={ing[0]} id={id} />
                   {ing[1] ? <Ingredientcheck key={index + 2} ingredient={ing[1]} id={id} /> : ""}

@@ -2,12 +2,12 @@ import React, { useState, useContext } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 import { colors, fontSize } from '../../../theme'
 import { createStackNavigator } from '@react-navigation/stack'
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
+import { NavigationContainer } from '@react-navigation/native'
 import { HomeTitleContext } from '../../../context/HomeTitleContext'
 import { ColorSchemeContext } from '../../../context/ColorSchemeContext'
 import { lightProps, darkProps } from './navigationProps/navigationProps'
 import * as Linking from 'expo-linking'
-
+import { DefaultTheme, DarkTheme } from '@react-navigation/native'
 import Home from '../../../scenes/Home'
 import FollowerFeed from '../../../scenes/FollowerFeed'
 import Detail from '../../../scenes/detail'
@@ -53,7 +53,7 @@ export const HomeNavigator = () => {
   }
 
   const [title, setTitle] = useState('default title')
-
+  
 
 
   return (
@@ -67,70 +67,88 @@ export const HomeNavigator = () => {
     >
       <HomeTitleContext.Consumer>
         {(ctx) => (
-          <Stack.Navigator screenOptions={navigationProps}
-
-            options={{
-
-            }}>
-            <Stack.Screen
-              name="Home"
-              component={TopNav}
-            />
-            <Stack.Screen
-              name="Look"
-              component={CheckRecipe}
-
-
-              options={{
-                headerTransparent: true,
-                headerTitle: '',
-                headerBackTitle: ""
-
-              }}
-
-            />
-            <Stack.Screen
-              name="SearchIngredient"
-              component={External}
-
+         
+            <Stack.Navigator screenOptions={navigationProps}
 
               options={{
 
+              }}>
+              <Stack.Screen
+                name="HomeStack"
+                component={Home}
 
-                headerTransparent: true,
-                headerTitle: '',
-                headerBackTitle: ""
+                options={() => ({
 
-              }}
 
-            />
-            <Stack.Screen
-              name="SeeAllIngredients"
-              component={Allingredients}
-              options={{
-                headerTransparent: true,
-                headerTitle: '',
-                headerBackTitle: ""
+                  header: () => (
+                    <View style={{ alignItems: "center", paddingBottom: 5 }}>
+                      <Text style={{ color: "white", textAlign: "center", fontSize: fontSize.large, paddingTop: 50, fontWeight: '500' }}>All</Text>
+                      <View style={{ flex: 1, height: 1, backgroundColor: 'white', borderTopColor: "white", width: 25, paddingTop: 1.5, borderRadius: 12 }} />
+                    </View>
 
-              }}
+                  )
 
-            />
-            <Stack.Screen
-              name="MakeRecipe"
-              component={Makeit}
-              options={{
-            
-          
-                headerTitle: '',
-                headerBackTitle: ""
+                  // headerBackground: () => (<HeaderStyle />),
+                })}
+              />
+              <Stack.Screen
+                name="Look"
+                component={CheckRecipe}
 
-              }}
 
-            />
-          </Stack.Navigator>
-        )}
-      </HomeTitleContext.Consumer>
-    </HomeTitleContext.Provider>
+                options={{
+                  headerTransparent: true,
+                  headerTitle: '',
+                  headerBackTitle: ""
+
+                }}
+
+              />
+              <Stack.Screen
+                name="SearchIngredient"
+                component={External}
+
+
+                options={{
+
+
+                  headerTransparent: true,
+                  headerTitle: '',
+                  headerBackTitle: ""
+
+                }}
+
+              />
+              <Stack.Screen
+                name="SeeAllIngredients"
+                component={Allingredients}
+                options={{
+                  headerTransparent: true,
+                  headerTitle: '',
+                  headerBackTitle: ""
+
+                }}
+
+              />
+              <Stack.Screen
+                name="MakeRecipe"
+                component={Makeit}
+                options={{
+
+
+                  headerTitle: '',
+                  headerBackTitle: ""
+
+                }}
+
+              />
+            </Stack.Navigator>
+       
+        )
+        }
+      </HomeTitleContext.Consumer >
+    </HomeTitleContext.Provider >
+
   )
 }
 
