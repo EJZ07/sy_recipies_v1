@@ -1,25 +1,15 @@
 
 import { useEffect } from 'react';
-import { HostLivestream, useCall, useCallStateHooks, useIncallManager, VideoRenderer, ViewerLivestream, } from '@stream-io/video-react-native-sdk';
+// import { HostLivestream, useCall, useCallStateHooks, useIncallManager, VideoRenderer, ViewerLivestream, } from '@stream-io/video-react-native-sdk';
 import { View, Button, Text, StyleSheet } from 'react-native';
 
 export const Viewstreamui = () => {
-  const call = useCall();
-
-  const { useParticipantCount, useLocalParticipant, useIsCallLive, useRemoteParticipants } = useCallStateHooks();
-
-  const totalParticipants = useParticipantCount();
-  const remoteParticipant = useRemoteParticipants();
-  const isCallLive = useIsCallLive();
-
   // Automatically route audio to speaker devices as relevant for watching videos.
-  useIncallManager({ media: 'video', auto: true });
-  useEffect(()  => {
-    console.log("REMOTE LIVE: ", remoteParticipant)
-  }, [])
+
 
   return (
-    <ViewerLivestream />
+    <View></View>
+    // <ViewerLivestream />
     // <View style={styles.flexed}>
     //   <Text style={styles.text}>Live: {totalParticipants}</Text>
     //   <View style={styles.flexed}>{remoteParticipant && <VideoRenderer participant={remoteParticipant} trackType='videoTrack' />}</View>

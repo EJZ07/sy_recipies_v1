@@ -8,7 +8,7 @@
       "ios",
       "android"
     ],
-    "version": "1.0.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/images/logo-sm.png",
     "splash": {
@@ -27,7 +27,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.syrian.recipes",
-      "buildNumber": "1.0.0",
+      "buildNumber": "1.2.0",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Use the photo library to change your avatar."
       },
@@ -68,35 +68,15 @@
         "tsx"
       ]
     },
-    "description": "",
-    "plugins": [
-      
-      "@stream-io/video-react-native-sdk",
-      "expo-font",
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "extraMavenRepos": ["../../node_modules/@notifee/react-native/android/libs"]
-          }
-        }
-      ],
-      [
-        "@config-plugins/react-native-webrtc",
-        {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
-          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone"
-        }
-      ]
-      
-    ],
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "aae4f0f1-4ae1-49b1-813c-e6a77a7095f2"
-      }
+    "description": ""
+
+  },
+  "runtimeVersion": {
+    "policy": "appVersion"
+  },
+  "extra": {
+    "eas": {
+      "projectId": "aae4f0f1-4ae1-49b1-813c-e6a77a7095f2"
     }
   }
 }

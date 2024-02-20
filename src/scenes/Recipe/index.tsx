@@ -12,17 +12,17 @@ import { AntDesign } from '@expo/vector-icons';
 import * as ImageManipulator from 'expo-image-manipulator'
 import { Entypo } from '@expo/vector-icons';
 import { firestore, storage } from '../../firebase/config';
-import { ref, uploadBytesResumable, getDownloadURL, getStorage, deleteObject } from "firebase/storage";
 import { doc, onSnapshot, collection, query, getDocs, setDoc, deleteDoc } from 'firebase/firestore';
 import { addPost, follow, unfollow } from '../../utils/firebaseFunctions'
 import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import moment from 'moment'
 import styles from './styles'
 import { ScrollView } from 'react-native-gesture-handler'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { showToast } from '../../utils/ShowToast'
 import { Skeleton } from '@rneui/base'
+import { ref, uploadBytesResumable, getDownloadURL, getStorage, deleteObject } from "firebase/storage";
+import tags from '../../utils/Tags';
 
 type ModalProps = {
   isVisible?: boolean;
@@ -67,6 +67,7 @@ export default function Recipe() {
     console.log("Post Selection: ", selection)
     const data = {
       id: userData.id,
+      tags: selection.tags,
       name: userData.fullName,
       image: selection.image,
       avatar: userData.avatar,
@@ -77,17 +78,23 @@ export default function Recipe() {
       comments: [],
       createdAt: new Date()
     }
-    addPost({ userData, data })
-    setRerender(!rerender)
-    showToast({
-      title: 'Recipe Posted',
-      body: 'Recipe Posted',
-      isDark
-    })
+    try {
+      addPost({ userData, data })
+      setRerender(!rerender)
+      showToast({
+        title: 'Recipe Posted',
+        body: 'Recipe Posted',
+        isDark
+      })
+      
+      setSelection({title: "", tags: [], image: "", ingredients: [""], steps: [{ text: "", image: "" }]})
+      navigation.navigate("Home")
+    }
+    catch(e){
+      console.log("Adding post error: ", e)
+    }
 
 
-    setSelection({})
-    navigation.navigate("Home")
   }
 
   const handleIngredients = (index, value) => {

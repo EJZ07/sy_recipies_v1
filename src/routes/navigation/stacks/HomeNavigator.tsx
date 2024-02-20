@@ -6,18 +6,50 @@ import { NavigationContainer } from '@react-navigation/native'
 import { HomeTitleContext } from '../../../context/HomeTitleContext'
 import { ColorSchemeContext } from '../../../context/ColorSchemeContext'
 import { lightProps, darkProps } from './navigationProps/navigationProps'
+import { createMaterialBottomTabNavigator} from 'react-native-paper/lib/typescript/react-navigation'
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import * as Linking from 'expo-linking'
 import { DefaultTheme, DarkTheme } from '@react-navigation/native'
 import Home from '../../../scenes/Home'
+import FollowerFeed from '../../../scenes/FollowerFeed'
 import Detail from '../../../scenes/detail'
 import CheckRecipe from '../../../scenes/CheckRecipe'
 import External from '../../../scenes/External'
 import Allingredients from '../../../scenes/Allingredients'
 import Makeit from '../../../scenes/Makeit'
 
-const Stack = createStackNavigator()
+const TopNav = () => {
+
+  
+
+
+  return (
+    <TopTab.Navigator
+      initialRouteName="For You"
+      screenOptions={{
+        tabBarLabelStyle: {
+          color: "#FFFFFF"
+        },
+        tabBarStyle: {
+          backgroundColor: "#00000000"
+        },
+        tabBarIndicatorStyle: {
+          backgroundColor: "#FFFFFF"
+        },
+        tabBarActiveTintColor: "#FFFFFF",
+        tabBarInactiveTintColor: "#FFFFFF"
+      }}
+    >
+      <TopTab.Screen name="Following" component={FollowerFeed} />
+      <TopTab.Screen name="For You" component={Home} />
+    </TopTab.Navigator>
+  )
+}
 
 export const HomeNavigator = () => {
+  const Stack = createStackNavigator()
+const TopTab = createMaterialTopTabNavigator()
+
   const { scheme } = useContext(ColorSchemeContext)
   const isDark = scheme === 'dark'
   const navigationProps = scheme === 'dark' ? darkProps : lightProps
