@@ -10,7 +10,7 @@ export const UserDataContextProvider = (props) => {
   const [followList, setFollowList] = useState([])
   const [savedList, setSavedList] = useState([])
   const [likedList, setLikedList] = useState([])
-  const [selection, setSelection] = useState({title: "", image: "", ingredients: [""], steps: [{ text: "", image: "" }]})
+  const [selection, setSelection] = useState({title: "", tags: [], image: "", ingredients: [""], steps: [{ text: "", image: "" }]})
 
   useEffect(() => {
     getLiked()

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext, Dispatch, SetStateAction } from 'react'
-import { Text, View, StyleSheet, TextInput, useWindowDimensions, Image, ScrollView, Touchable } from 'react-native'
+import React, { useCallback, useState, useEffect, useContext, Dispatch, SetStateAction } from 'react'
+import { Pressable, FlatList, Text, View, StyleSheet, TextInput, KeyboardAvoidingView, Platform, Dimensions, Image, ScrollView, Touchable } from 'react-native'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import Button from '../../components/Button'
 import { useRoute, useFocusEffect, useNavigation, StackActions } from '@react-navigation/native'
@@ -17,6 +17,8 @@ import styles from './styles'
 import * as ImagePicker from 'expo-image-picker';
 // import { firestore, storage } from '../../firebase/config';
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import TagItem from '../../components/TagItem'
+import tags from '../../utils/Tags';
 
 type ModalProps = {
   isVisible?: boolean;
@@ -34,8 +36,7 @@ export default function Create() {
   const [date, setDate] = useState('')
   const [image, setImage] = useState(selection.image)
   const [text, setText] = useState(selection.title)
-  const [description, setDescription] = useState(selection.description)
-  const [progress, setProgress] = useState("")
+  const [selectedTags, setSelectedTags] = useState([])
   const [isVisible, setIsVisible] = useState(true)
   const navigation = useNavigation()
   const isDark = scheme === 'dark'
@@ -46,7 +47,7 @@ export default function Create() {
 
 
   const handleSave = () => {
-    setSelection({ ...selection, title: text, description: description })
+    setSelection({ ...selection, title: text, tags: selectedTags })
     navigation.navigate("Guide")
   }
 
@@ -97,21 +98,24 @@ export default function Create() {
     }
   }
 
-  const handleImageDelete = () => {
-    const storage = getStorage();
+  const addTag = useCallback((tag : Tag) => {
+    if(selectedTags.includes(tag)) {
+      return;
+    }
+    setSelectedTags([...selectedTags, tag])
+  }, [selectedTags, setSelectedTags])
 
-    // Create a reference to the file to delete
-    const desertRef = ref(storage, image);
+  const removeTag = useCallback((tag : Tag) => {
 
-    // Delete the file
-    deleteObject(desertRef).then(() => {
-      setImage('')
-      // File deleted successfully
-    }).catch((error) => {
-      // Uh-oh, an error occurred!
-      console.log("Deleting image ERROR: ", error)
-    });
-  }
+    const index = selectedTags.indexOf(tag)
+
+    if(index < 0 || selectedTags.length < 1) return;
+
+    const temparr = [...selectedTags]
+    temparr.splice(index, 1)
+
+    setSelectedTags(temparr)
+  }, [selectedTags])
 
   return (
     <View>
@@ -161,10 +165,49 @@ export default function Create() {
             }} />
           </TouchableOpacity>}
 
+          <View style={{
+            flexDirection: 'column',
+            paddingBottom: 5
+          }}>
+              <View style={{
+                  flexDirection: 'row',
+                  paddingBottom: 5,
+              }}>
+                  <FlatList 
+                    data={tags}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    keyExtractor={(item) => Math.random() * 9999}
+                    ItemSeparatorComponent={<View style={{paddingHorizontal: 5}} />}
+                    renderItem={({item}) => (
+                      <Pressable onPress={() => {addTag(item)}}>
+                          <TagItem tag={item}/>
+                      </Pressable>
+                    )}
+                  />
+              </View>
+              {selectedTags?.length > 0 && <Text style={{color: "#FFFFFF"}}>
+                Current Tags
+              </Text>}
+              <View style={{
+                      flexDirection: 'row',
+                      width: "100%",
+                      flexWrap: "wrap",
+                      gap: 10,
+                      rowGap: 8,
+                  }}>
+                  {selectedTags?.map((tag) => (
+                      <Pressable onPress={() => {removeTag(tag)}}>
+                          <TagItem key={Math.random() * 9999} tag={tag}/>
+                      </Pressable>
+                  ))}      
+              </View>
+          </View>
+
           <View style={{ flexDirection: "row" }}>
 
             {
-              image.length > 1 ?
+              image != undefined ?
                 <View style={{ marginRight: 10 }}>
                   <Button
                     label='remove'
@@ -176,6 +219,7 @@ export default function Create() {
 
                 : ""
             }
+
 
             <Button
               label='Next'
