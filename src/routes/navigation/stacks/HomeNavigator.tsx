@@ -6,6 +6,8 @@ import { NavigationContainer } from '@react-navigation/native'
 import { HomeTitleContext } from '../../../context/HomeTitleContext'
 import { ColorSchemeContext } from '../../../context/ColorSchemeContext'
 import { lightProps, darkProps } from './navigationProps/navigationProps'
+import { createMaterialBottomTabNavigator} from 'react-native-paper/lib/typescript/react-navigation'
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import * as Linking from 'expo-linking'
 import { DefaultTheme, DarkTheme } from '@react-navigation/native'
 import Home from '../../../scenes/Home'
@@ -16,10 +18,11 @@ import External from '../../../scenes/External'
 import Allingredients from '../../../scenes/Allingredients'
 import Makeit from '../../../scenes/Makeit'
 
-const Stack = createStackNavigator()
-const TopTab = createMaterialTopTabNavigator()
-
 const TopNav = () => {
+
+  
+
+
   return (
     <TopTab.Navigator
       initialRouteName="For You"
@@ -44,6 +47,9 @@ const TopNav = () => {
 }
 
 export const HomeNavigator = () => {
+  const Stack = createStackNavigator()
+const TopTab = createMaterialTopTabNavigator()
+
   const { scheme } = useContext(ColorSchemeContext)
   const isDark = scheme === 'dark'
   const navigationProps = scheme === 'dark' ? darkProps : lightProps

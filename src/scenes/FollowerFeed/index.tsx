@@ -53,8 +53,6 @@ export default function FollowerFeed() {
 
             const data = doc.data()
 
-
-
             const userid = data.id
 
             const isUserFollowed = followList.some((currentuserid) => currentuserid === userid)
