@@ -12,7 +12,6 @@ import { AntDesign } from '@expo/vector-icons';
 import * as ImageManipulator from 'expo-image-manipulator'
 import { Entypo } from '@expo/vector-icons';
 import { firestore, storage } from '../../firebase/config';
-import { ref, uploadBytesResumable, getDownloadURL, getStorage, deleteObject } from "firebase/storage";
 import { doc, onSnapshot, collection, query, getDocs, setDoc, deleteDoc } from 'firebase/firestore';
 import { addPost, follow, unfollow } from '../../utils/firebaseFunctions'
 import { Feather } from '@expo/vector-icons';
@@ -22,7 +21,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { showToast } from '../../utils/ShowToast'
 import { Skeleton } from '@rneui/base'
-import { ref, uploadBytesResumable, getDownloadURL, } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL, getStorage, deleteObject } from "firebase/storage";
 import tags from '../../utils/Tags';
 
 type ModalProps = {

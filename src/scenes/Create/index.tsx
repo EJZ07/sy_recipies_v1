@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect, useContext, Dispatch, SetStateAction } from 'react'
-import { Pressable, FlatList, Text, View, StyleSheet, TextInput, KeyboardAvoidingView, Platform, Dimensions, Image, ScrollView, Touchable } from 'react-native'
+import { Pressable, FlatList, Text, View, StyleSheet, TextInput, useWindowDimensions, Platform, Dimensions, Image, ScrollView, Touchable } from 'react-native'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import Button from '../../components/Button'
 import { useRoute, useFocusEffect, useNavigation, StackActions } from '@react-navigation/native'
@@ -36,7 +36,9 @@ export default function Create() {
   const [date, setDate] = useState('')
   const [image, setImage] = useState(selection.image)
   const [text, setText] = useState(selection.title)
+  const [description, setDescription] = useState("")
   const [selectedTags, setSelectedTags] = useState([])
+  const [progress, setProgress] = useState('')
   const [isVisible, setIsVisible] = useState(true)
   const navigation = useNavigation()
   const isDark = scheme === 'dark'
@@ -45,9 +47,13 @@ export default function Create() {
     text: isDark ? colors.white : colors.primaryText
   }
 
+  useEffect(() => {
+    console.log("Selection: ", selection)
+  }, [selection])
+
 
   const handleSave = () => {
-    setSelection({ ...selection, title: text, tags: selectedTags })
+    setSelection({ ...selection, title: text, tags: selectedTags, description: description, image: image })
     navigation.navigate("Guide")
   }
 
@@ -88,6 +94,7 @@ export default function Create() {
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setProgress('')
+          
             setImage(downloadURL)
             setSelection({ ...selection, image: downloadURL })
 
@@ -98,14 +105,12 @@ export default function Create() {
     }
   }
 
-  const addTag = useCallback((tag : Tag) => {
-    if(selectedTags.includes(tag)) {
-      return;
-    }
+  const addTag = useCallback((tag) => {
+   
     setSelectedTags([...selectedTags, tag])
   }, [selectedTags, setSelectedTags])
 
-  const removeTag = useCallback((tag : Tag) => {
+  const removeTag = useCallback((tag) => {
 
     const index = selectedTags.indexOf(tag)
 
@@ -157,8 +162,10 @@ export default function Create() {
           </View>
           {image == '' ? <Entypo name="camera" size={35} color={colorScheme.text} style={{ padding: 12 }} onPress={() => {
             handleImageChange()
-          }} /> : <TouchableOpacity onLongPress={() => handleImageChange()}>
-            <Image source={{ uri: image }} style={{
+          }} /> : 
+          <TouchableOpacity onLongPress={() => handleImageChange()}>
+            <Image source={{ uri: image }} 
+            style={{
               width: 300,
               height: 400,
               borderRadius: 20,
@@ -167,7 +174,7 @@ export default function Create() {
 
           <View style={{
             flexDirection: 'column',
-            paddingBottom: 5
+            paddingBottom: 5, paddingTop: 12
           }}>
               <View style={{
                   flexDirection: 'row',
@@ -176,14 +183,14 @@ export default function Create() {
                   <FlatList 
                     data={tags}
                     horizontal
+    
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={(item) => Math.random() * 9999}
-                    ItemSeparatorComponent={<View style={{paddingHorizontal: 5}} />}
-                    renderItem={({item}) => (
-                      <Pressable onPress={() => {addTag(item)}}>
+                    renderItem={({item}) => 
+                      <Pressable onPress={() => {addTag(item)}} style={{marginRight: 8}}>
                           <TagItem tag={item}/>
                       </Pressable>
-                    )}
+                    }
                   />
               </View>
               {selectedTags?.length > 0 && <Text style={{color: "#FFFFFF"}}>
